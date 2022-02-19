@@ -1,4 +1,4 @@
-package main.java.Application;
+package main.java.application;
 
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
@@ -15,11 +15,11 @@ public class GeneratorData {
 
     private static final String GROUP_NAME_SEPARATOR = "-";
 
-    private final Faker generatorData;
+    private final Faker faker;
     private final Random generatorNumber;
 
     public GeneratorData(Faker generatorData, Random generatorNumber) {
-        this.generatorData = generatorData;
+        this.faker = generatorData;
         this.generatorNumber = generatorNumber;
     }
 
@@ -28,7 +28,7 @@ public class GeneratorData {
     public List<Groups> generateGroup(Integer number) {
         List<Groups> groups = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
-            groups.add(createGroup(i + 1));
+            groups.add(createGroup());
         }
         return groups;
     }
@@ -36,7 +36,7 @@ public class GeneratorData {
     public List<Student> generateStudents(Integer number) {
         List<Student> students = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
-            students.add(createStudent(i + 1));
+            students.add(createStudent());
         }
         return students;
     }
@@ -45,7 +45,7 @@ public class GeneratorData {
         List<Courses> courses = new ArrayList<>(number);
 
         for (int i = 0; i < number; i++) {
-            courses.add(createCourse(i + 1));
+            courses.add(createCourse());
         }
         return courses;
     }
@@ -65,33 +65,39 @@ public class GeneratorData {
 
     public void assignCoursesToStudents(List<Courses> courses, List<Student> students, Integer minCoursesNumber, Integer maxCoursesNumber) {
         students.forEach(student -> {
-            IntStream.rangeClosed(1, getRandomNumberInRange(minCoursesNumber, maxCoursesNumber));
+            IntStream.range(1, getRandomNumberInRange(minCoursesNumber, maxCoursesNumber));
             assignStudentToRandomCourse(courses, student);
         });
     }
 
-    private Groups createGroup(Integer id) {
-        return new Groups(id, generateRandomGroupName());
+    private Groups createGroup() {
+        return new Groups(null, generateRandomGroupName());
     }
 
     private String generateRandomGroupName() {
-        return RandomStringUtils.randomAlphabetic(2) + GROUP_NAME_SEPARATOR + RandomStringUtils.randomNumeric(2);
+        return RandomStringUtils.randomAlphabetic(2)
+                + GROUP_NAME_SEPARATOR
+                + RandomStringUtils.randomNumeric(2);
     }
 
-    private Student createStudent(Integer id) {
-        Name name = generatorData.name();
+    private Student createStudent() {
+        Name name = faker.name();
         return new Student(null, name.firstName(), name.lastName());
     }
 
-    private Courses createCourse(Integer id) {
-        String name = generatorData.educator().course();
-        return new Courses(id, name, "Course of " + name);
+    private Courses createCourse() {
+        String name = faker.educator().course();
+        return new Courses(null, name, "Course of " + name);
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private int getRandomNumberInRange(Integer min, Integer max) {
         return generatorNumber.ints(min, max + 1)
-                .limit(1).findFirst().getAsInt();
+                .limit(1)
+                .findFirst()
+                .getAsInt();
     }
+
     private void assignStudentToRandomCourse(List<Courses> courses, Student student) {
         Courses course = courses.get(getRandomNumberInRange(0, courses.size() - 1));
         List<Student> students = course.getStudents();

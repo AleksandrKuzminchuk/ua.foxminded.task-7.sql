@@ -5,7 +5,11 @@ import main.java.exceptions.ExceptionsHandlingConstants;
 import main.java.exceptions.NoDBPropertiesException;
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -13,13 +17,11 @@ import static java.lang.String.format;
 
 public class QueryExecutor {
 
-    private static final String UTF8 = "UTF-8";
     private static final String DROP_TABLES = "src/main/resources/sql/drop-tables.sql";
     private static final String CREATE_GROUPS = "src/main/resources/sql/create-table-groups.sql";
     private static final String CREATE_COURSES = "src/main/resources/sql/create-table-courses.sql";
     private static final String CREATE_STUDENTS = "src/main/resources/sql/create-table-students.sql";
     private static final String CREATE_STUDENTS_COURSES = "src/main/resources/sql/create-table-students_courses.sql";
-
     private static final Logger logger = Logger.getLogger(QueryExecutor.class);
 
     private final ConnectionUtils connectionUtils;
@@ -28,52 +30,54 @@ public class QueryExecutor {
         this.connectionUtils = connectionUtils;
     }
 
-    public void createTables(){
-        logger.info("Create tables: students, courses, groups, students_courses");
+    public void createTables() {
+        logger.info(":: DROPPING TABLES...");
         executorQuery(readQuery(DROP_TABLES));
-        executorQuery(readQuery(CREATE_STUDENTS));
-        executorQuery(readQuery(CREATE_COURSES));
+        logger.info("Create table groups...");
         executorQuery(readQuery(CREATE_GROUPS));
+        logger.info("Create table students...");
+        executorQuery(readQuery(CREATE_STUDENTS));
+        logger.info("Create table courses...");
+        executorQuery(readQuery(CREATE_COURSES));
+        logger.info("Create table students_courses...");
         executorQuery(readQuery(CREATE_STUDENTS_COURSES));
-        logger.info("Created tables: students, courses, groups, students_courses");
+        logger.info(":: All tables created SUCCESS");
     }
 
-    private void executorQuery(String text){
-        requiredNonNullAndIsEmpty(text);
+    private void executorQuery(String text) {
+        requiredNonNull(text);
         logger.info(format("executorQuery('%s')", text.length()));
-        try(Statement statement = connectionUtils.getConnection().createStatement()
-                ){
+        try (Statement statement = connectionUtils.getConnection().createStatement()) {
             statement.execute(text);
-            logger.info("Created statement from the the class QueryExecutor");
-        }catch (SQLException e){
+            logger.info("statement executed successfully");
+        } catch (SQLException e) {
             logger.error("Can't execute query. Cause: " + e.getLocalizedMessage());
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-
     }
 
-    private String readQuery(String file){
-        requiredNonNullAndIsEmpty(file);
+    private String readQuery(String file) {
+        requiredNonNull(file);
         logger.info(format("read %s file...", file));
-        try(FileInputStream fileInputStream = new FileInputStream(file)
-                ){
-            return computeQueryFileContent(fileInputStream, UTF8);
-        }catch (IOException e){
+        try (FileInputStream fileInputStream = new FileInputStream(file)
+        ) {
+            return computeQueryFileContent(fileInputStream);
+        } catch (IOException e) {
             logger.error("Cannot read the query text file: %s", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
     }
 
-    private String computeQueryFileContent(FileInputStream inputStream, String encoding){
-        requiredNonNullAndIsEmpty(inputStream, encoding);
+    private String computeQueryFileContent(FileInputStream inputStream) {
+        requiredNonNull(inputStream);
         logger.info("Begin read inputStreamFile and encoding");
         String line;
         StringBuilder builder = new StringBuilder();
-        try(InputStreamReader streamReader = new InputStreamReader(inputStream, encoding);
-            BufferedReader reader = new BufferedReader(streamReader)
-                ){
+        try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(streamReader)
+        ) {
             logger.info("Read and convert file in StringBuilder");
-            while ((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 builder.append(line);
                 builder.append("\n");
             }
@@ -85,15 +89,10 @@ public class QueryExecutor {
         }
     }
 
-    private void requiredNonNullAndIsEmpty(String str){
-        if (str == null || str.isEmpty()){
+    private void requiredNonNull(Object obj) {
+        if (obj == null) {
             throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL_OR_EMPTY);
         }
     }
 
-    private void requiredNonNullAndIsEmpty(FileInputStream inputStream, String str){
-        if (str == null || str.isEmpty() || inputStream == null){
-            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL_OR_EMPTY);
-        }
-    }
 }

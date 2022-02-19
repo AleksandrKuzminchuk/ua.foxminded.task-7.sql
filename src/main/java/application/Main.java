@@ -1,13 +1,15 @@
-package main.java.Application;
+package main.java.application;
 
 import com.github.javafaker.Faker;
 import main.java.config.PropertiesManager;
+import main.java.dao.CourseDao;
+import main.java.dao.GroupDao;
+import main.java.dao.StudentDao;
 import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Courses;
 import main.java.model.Student;
-import main.java.service.CourseService;
-import main.java.service.GroupService;
-import main.java.service.StudentService;
+import main.java.dao.impl.CourseDaoImpl;
+import main.java.dao.impl.GroupDaoImpl;
+import main.java.dao.impl.StudentDaoImpl;
 import main.java.util.ConnectionUtils;
 import main.java.util.QueryExecutor;
 
@@ -39,27 +41,24 @@ public class Main {
 
         GeneratorData generatorData = new GeneratorData(faker, random);
 
-        GroupService  groupService = new GroupService(connectionUtils);
-        groupService.saveAll(generatorData.generateGroup(10));
+        GroupDao groupDao = new GroupDaoImpl(connectionUtils);
+        groupDao.saveAll(generatorData.generateGroup(10));
 
-        CourseService courseService = new CourseService(connectionUtils);
-        courseService.saveAll(generatorData.generateCourses(20));
+        CourseDao courseDao = new CourseDaoImpl(connectionUtils);
+        courseDao.saveAll(generatorData.generateCourses(20));
 
-        StudentService studentService = new StudentService(connectionUtils);
-        studentService.saveAll(generatorData.generateStudents(200));
+        StudentDao studentDao = new StudentDaoImpl(connectionUtils);
+        studentDao.saveAll(generatorData.generateStudents(200));
 
-//        List<Student> allStudents = studentService.findAll();
-//        if (allStudents == null || allStudents.isEmpty()){
-//            throw new NoDBPropertiesException("Shit happened! Check 'studentDao.saveAll' method");
-//        }
+        List<Student> allStudents = studentDao.findAll();
+        if (allStudents == null || allStudents.isEmpty()) {
+            throw new NoDBPropertiesException("Shit happened! Check 'studentDao.saveAll' method");
+        }
 
-//        Optional<Student> student = studentService.findById(14);
-
-//        studentService.deleteById(12);
-
-//                studentService.findById(12);
-
-//        courseService.findById(10);
+        Optional<Student> student = studentDao.findById(14);
+        studentDao.deleteById(12);
+        studentDao.findById(12);
+        courseDao.findById(10);
 
     }
 

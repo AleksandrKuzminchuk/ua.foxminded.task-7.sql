@@ -1,11 +1,10 @@
-package main.java.service;
+package main.java.dao.impl;
 
 import main.java.dao.CourseDao;
 import main.java.dao.constants.QueryConstantsCourses;
 import main.java.exceptions.ExceptionsHandlingConstants;
 import main.java.exceptions.NoDBPropertiesException;
 import main.java.model.Courses;
-import main.java.model.Student;
 import main.java.util.ConnectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -19,13 +18,13 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 
-public class CourseService implements CourseDao {
+public class CourseDaoImpl implements CourseDao {
 
-    private static final Logger logger = Logger.getLogger(CourseService.class);
+    private static final Logger logger = Logger.getLogger(CourseDaoImpl.class);
 
     private final ConnectionUtils connectionUtils;
 
-    public CourseService(ConnectionUtils connectionUtils) {
+    public CourseDaoImpl(ConnectionUtils connectionUtils) {
         this.connectionUtils = connectionUtils;
     }
 
@@ -42,11 +41,11 @@ public class CourseService implements CourseDao {
         requiredNonNull(studentId);
         logger.info(format("findByStudentId('%d')", studentId));
         List<Courses> courses = new LinkedList<>();
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsCourses.FIND_COURSES_BY_STUDENT_ID);
-                ){
-            statement.setInt(1,studentId);
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsCourses.FIND_COURSES_BY_STUDENT_ID);
+        ) {
+            statement.setInt(1, studentId);
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 courses.add(extract(resultSet));
             }
         } catch (SQLException e) {
@@ -60,9 +59,8 @@ public class CourseService implements CourseDao {
     public Optional<Courses> save(Courses course) {
         requiredNonNull(course);
         logger.info(format("saving %s...", course));
-        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsCourses.SAVE_COURSE,
-                new String[]{"course_id"})
-                ){
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsCourses.SAVE_COURSE, new String[]{"course_id"})) {
             statement.setString(1, course.getCourseName());
             statement.setString(2, course.getCourseDescription());
             statement.executeUpdate();
@@ -79,13 +77,13 @@ public class CourseService implements CourseDao {
         }
     }
 
-//    ToDo: I am not understand than this method(I made)
-    @Override
+
+    @Override//    ToDo: I can't understand this method...
     public Optional<Courses> findById(Integer studentId) {
         requiredNonNull(studentId);
         logger.info(format("findById %d", studentId));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsCourses.FIND_COURSES_BY_STUDENT_ID)
-                ){
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsCourses.FIND_COURSES_BY_STUDENT_ID)) {
             statement.setInt(1, studentId);
             ResultSet resultSet = statement.executeQuery();
             Courses result = resultSet.next() ? extract(resultSet) : null;
@@ -101,10 +99,10 @@ public class CourseService implements CourseDao {
     public List<Courses> findAll() {
         List<Courses> courses = new LinkedList<>();
         logger.info("findAll...");
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsCourses.FIND_ALL)
-                ){
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsCourses.FIND_ALL)) {
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 courses.add(extract(resultSet));
             }
         } catch (SQLException e) {
@@ -148,8 +146,8 @@ public class CourseService implements CourseDao {
         throw new NotImplementedException("Method 'deleteAll' not implemented");
     }
 
-    private void requiredNonNull(Object o){
-        if (o == null){
+    private void requiredNonNull(Object o) {
+        if (o == null) {
             throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
         }
     }
