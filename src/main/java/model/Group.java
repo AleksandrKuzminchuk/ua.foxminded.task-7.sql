@@ -2,15 +2,12 @@ package main.java.model;
 
 import java.util.Objects;
 
-public class Groups {
+public class Group {
 
     private Integer groupId;
     private String groupName;
 
-    public Groups() {
-    }
-
-    public Groups(Integer groupId, String groupName) {
+    public Group(Integer groupId, String groupName) {
         this.groupId = groupId;
         this.groupName = groupName;
     }
@@ -35,8 +32,8 @@ public class Groups {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Groups groups = (Groups) o;
-        return Objects.equals(groupId, groups.groupId) && Objects.equals(groupName, groups.groupName);
+        Group group = (Group) o;
+        return Objects.equals(groupId, group.groupId) && Objects.equals(groupName, group.groupName);
     }
 
     @Override

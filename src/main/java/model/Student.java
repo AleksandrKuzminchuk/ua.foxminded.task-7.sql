@@ -9,9 +9,7 @@ public class Student {
     private Integer groupId;
     private String firstName;
     private String lastName;
-    private List<Courses> courses;
-
-    public Student(){}
+    private List<Course> courses;
 
     public Student(Integer studentId, String firstName, String lastName) {
         this.studentId = studentId;
@@ -20,17 +18,8 @@ public class Student {
     }
 
     public Student(Integer studentId, Integer groupId, String firstName, String lastName) {
-        this.studentId = studentId;
+        this(studentId, firstName, lastName);
         this.groupId = groupId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public Student(Integer studentId, String firstName, String lastName, List<Courses> courses) {
-        this.studentId = studentId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.courses = courses;
     }
 
     public Integer getStudentId() {
@@ -65,7 +54,7 @@ public class Student {
         this.lastName = lastName;
     }
 
-    public List<Courses> getCourses(){
+    public List<Course> getCourses() {
         return courses;
     }
 
@@ -74,7 +63,11 @@ public class Student {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Student student = (Student) o;
-        return Objects.equals(studentId, student.studentId) && Objects.equals(groupId, student.groupId) && Objects.equals(firstName, student.firstName) && Objects.equals(lastName, student.lastName) && Objects.equals(courses, student.courses);
+        return Objects.equals(studentId, student.studentId)
+                && Objects.equals(groupId, student.groupId)
+                && Objects.equals(firstName, student.firstName)
+                && Objects.equals(lastName, student.lastName)
+                && Objects.equals(courses, student.courses);
     }
 
     @Override

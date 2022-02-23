@@ -3,23 +3,23 @@ package main.java.model;
 import java.util.List;
 import java.util.Objects;
 
-public class Courses {
+public class Course {
 
     private Integer courseId;
     private String courseName;
     private String courseDescription;
     private List<Student> students;
 
-    public Courses() {
+    public Course() {
     }
 
-    public Courses(Integer courseId, String courseName, String courseDescription) {
+    public Course(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
     }
 
-    public Courses(Integer courseId, String courseName, String courseDescription, List<Student> students) {
+    public Course(Integer courseId, String courseName, String courseDescription, List<Student> students) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDescription = courseDescription;
@@ -58,8 +58,8 @@ public class Courses {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Courses courses = (Courses) o;
-        return Objects.equals(courseId, courses.courseId) && Objects.equals(courseName, courses.courseName) && Objects.equals(courseDescription, courses.courseDescription) && Objects.equals(students, courses.students);
+        Course course = (Course) o;
+        return Objects.equals(courseId, course.courseId) && Objects.equals(courseName, course.courseName) && Objects.equals(courseDescription, course.courseDescription) && Objects.equals(students, course.students);
     }
 
     @Override

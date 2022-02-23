@@ -1,14 +1,13 @@
 package main.java.dao;
 
-import main.java.model.Groups;
+import main.java.model.Group;
 
 import java.util.List;
 
-public interface GroupDao {
+public interface GroupDao extends CrudRepository<Group, Integer> {
 
-    void saveAll(List<Groups> groups);
+    void saveAll(List<Group> groups);
 
-    List<Groups> findByStudentsCountsLessEqual(Integer count);
+    List<Group> findByStudentsCountsLessEqual(Integer count);
 
-    List<Groups> getAll();
 }

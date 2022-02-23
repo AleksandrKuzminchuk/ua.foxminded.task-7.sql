@@ -5,20 +5,23 @@ import main.java.config.PropertiesManager;
 import main.java.dao.CourseDao;
 import main.java.dao.GroupDao;
 import main.java.dao.StudentDao;
-import main.java.implementation.CourseImplDao;
-import main.java.implementation.GroupImplDao;
-import main.java.implementation.StudentImplDao;
-import main.java.model.Courses;
-import main.java.model.Groups;
+import main.java.dao.impl.CourseDaoImpl;
+import main.java.dao.impl.GroupDaoImpl;
+import main.java.dao.impl.StudentDaoImpl;
+import main.java.model.Course;
+import main.java.model.Group;
 import main.java.model.Student;
+import main.java.service.StudentService;
 import main.java.util.ConnectionUtils;
 import main.java.util.QueryExecutor;
+import org.apache.log4j.Logger;
 
 import java.util.List;
 import java.util.Random;
 
 public class Main {
 
+    private static final Logger logger = Logger.getLogger(Main.class);
     private static final String PROPERTIES_FILE = "src/main/resources/db.properties";
     private static final String URL = "db.url";
     private static final String USER = "db.user";
@@ -41,26 +44,24 @@ public class Main {
 
         GeneratorData generatorData = new GeneratorData(faker, random);
 
-        GroupDao groupDao = new GroupImplDao(connectionUtils);
+        GroupDao groupDao = new GroupDaoImpl(connectionUtils);
         groupDao.saveAll(generatorData.generateGroup(15));
+        List<Group> allGroups = groupDao.findAll();
 
-        List<Groups> groupsList = groupDao.getAll();
+        StudentDao studentDao = new StudentDaoImpl(connectionUtils);
+        studentDao.saveAll(generatorData.generateStudents(200, allGroups));
 
-        StudentDao studentDao = new StudentImplDao(connectionUtils);
-        studentDao.saveAll(generatorData.generateStudents(200, groupsList));
-
-        CourseDao courseDao = new CourseImplDao(connectionUtils);
+        CourseDao courseDao = new CourseDaoImpl(connectionUtils);
         courseDao.saveAll(generatorData.generateCourses(20));
 
-        List<Student> allStudents = studentDao.findAll();
-        List<Courses> allCourses  = courseDao.findAll();
+         StudentService studentService = new StudentService(courseDao, random);
+        studentService.addStudentsOnCourses(studentDao.findAll(), courseDao.findAll());
 
-        for (Student student : allStudents){
-            for (Courses course : allCourses){
-                courseDao.addStudentsAndCourses(student, course);
-            }
-        }
+        List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(10);
+        logger.info(groupsByStudents);
 
+        List<Course> courses = courseDao.findAll();
+        logger.info(courses);
     }
 
 }

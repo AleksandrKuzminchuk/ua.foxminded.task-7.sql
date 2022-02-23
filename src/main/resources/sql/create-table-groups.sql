@@ -1,4 +1,3 @@
-
 CREATE TABLE public.groups
 (
     group_id SERIAL PRIMARY KEY ,
