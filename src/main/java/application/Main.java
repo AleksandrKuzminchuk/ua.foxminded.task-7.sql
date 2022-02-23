@@ -5,16 +5,16 @@ import main.java.config.PropertiesManager;
 import main.java.dao.CourseDao;
 import main.java.dao.GroupDao;
 import main.java.dao.StudentDao;
-import main.java.exceptions.NoDBPropertiesException;
+import main.java.implementation.CourseImplDao;
+import main.java.implementation.GroupImplDao;
+import main.java.implementation.StudentImplDao;
+import main.java.model.Courses;
+import main.java.model.Groups;
 import main.java.model.Student;
-import main.java.dao.impl.CourseDaoImpl;
-import main.java.dao.impl.GroupDaoImpl;
-import main.java.dao.impl.StudentDaoImpl;
 import main.java.util.ConnectionUtils;
 import main.java.util.QueryExecutor;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class Main {
@@ -41,24 +41,25 @@ public class Main {
 
         GeneratorData generatorData = new GeneratorData(faker, random);
 
-        GroupDao groupDao = new GroupDaoImpl(connectionUtils);
-        groupDao.saveAll(generatorData.generateGroup(10));
+        GroupDao groupDao = new GroupImplDao(connectionUtils);
+        groupDao.saveAll(generatorData.generateGroup(15));
 
-        CourseDao courseDao = new CourseDaoImpl(connectionUtils);
+        List<Groups> groupsList = groupDao.getAll();
+
+        StudentDao studentDao = new StudentImplDao(connectionUtils);
+        studentDao.saveAll(generatorData.generateStudents(200, groupsList));
+
+        CourseDao courseDao = new CourseImplDao(connectionUtils);
         courseDao.saveAll(generatorData.generateCourses(20));
 
-        StudentDao studentDao = new StudentDaoImpl(connectionUtils);
-        studentDao.saveAll(generatorData.generateStudents(200));
-
         List<Student> allStudents = studentDao.findAll();
-        if (allStudents == null || allStudents.isEmpty()) {
-            throw new NoDBPropertiesException("Shit happened! Check 'studentDao.saveAll' method");
-        }
+        List<Courses> allCourses  = courseDao.findAll();
 
-        Optional<Student> student = studentDao.findById(14);
-        studentDao.deleteById(12);
-        studentDao.findById(12);
-        courseDao.findById(10);
+        for (Student student : allStudents){
+            for (Courses course : allCourses){
+                courseDao.addStudentsAndCourses(student, course);
+            }
+        }
 
     }
 
