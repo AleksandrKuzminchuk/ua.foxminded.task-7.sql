@@ -47,6 +47,9 @@ public class Main {
         GroupDao groupDao = new GroupDaoImpl(connectionUtils);
         groupDao.saveAll(generatorData.generateGroup(15));
         List<Group> allGroups = groupDao.findAll();
+        List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(10);
+        logger.info(groupsByStudents);
+
 
         StudentDao studentDao = new StudentDaoImpl(connectionUtils);
         studentDao.saveAll(generatorData.generateStudents(200, allGroups));
@@ -54,14 +57,14 @@ public class Main {
         CourseDao courseDao = new CourseDaoImpl(connectionUtils);
         courseDao.saveAll(generatorData.generateCourses(20));
 
-         StudentService studentService = new StudentService(courseDao, random);
-        studentService.addStudentsOnCourses(studentDao.findAll(), courseDao.findAll());
-
-        List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(10);
-        logger.info(groupsByStudents);
-
+        List<Student> students = studentDao.findAll();
         List<Course> courses = courseDao.findAll();
-        logger.info(courses);
+        StudentService studentService = new StudentService(courseDao, random);
+        studentService.addStudentsOnCourses(students, courses);
+
+        List<Student> allSignedOnCurse = studentService.findAllSignedOnCurse(courses.get(courses.size() / 2));
+        logger.error("allSignedOnCurse IS null  ->  must be Implemented!");
+
     }
 
 }

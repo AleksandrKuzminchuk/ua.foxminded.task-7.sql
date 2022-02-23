@@ -24,4 +24,10 @@ public class StudentService {
             courseDao.addStudentsAndCourses(student, course);
         }
     }
+
+    public List<Student> findAllSignedOnCurse(Course course) {
+        // find all students signed to required course
+        // (query to students_courses table +JOIN students)
+        return null;//ToDo-> implement me !
+    }
 }
