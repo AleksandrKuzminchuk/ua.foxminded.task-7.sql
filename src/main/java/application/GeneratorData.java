@@ -33,12 +33,17 @@ public class GeneratorData {
         return groups;
     }
 
-    public List<Student> generateStudents(Integer number) {
+    public List<Student> generateStudents(Integer number, List<Groups> groups) {
         List<Student> students = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
-            students.add(createStudent());
+            students.add(createStudent(groups.size()));
         }
         return students;
+    }
+
+    private Student createStudent(Integer integer) {
+        Name name = faker.name();
+        return new Student(null, getRandomNumberInRange(1, integer),name.firstName(), name.lastName());
     }
 
     public List<Courses> generateCourses(Integer number) {
@@ -75,14 +80,7 @@ public class GeneratorData {
     }
 
     private String generateRandomGroupName() {
-        return RandomStringUtils.randomAlphabetic(2)
-                + GROUP_NAME_SEPARATOR
-                + RandomStringUtils.randomNumeric(2);
-    }
-
-    private Student createStudent() {
-        Name name = faker.name();
-        return new Student(null, name.firstName(), name.lastName());
+        return RandomStringUtils.randomAlphabetic(2) + GROUP_NAME_SEPARATOR + RandomStringUtils.randomNumeric(2);
     }
 
     private Courses createCourse() {
@@ -93,11 +91,8 @@ public class GeneratorData {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private int getRandomNumberInRange(Integer min, Integer max) {
         return generatorNumber.ints(min, max + 1)
-                .limit(1)
-                .findFirst()
-                .getAsInt();
+                .limit(1).findFirst().getAsInt();
     }
-
     private void assignStudentToRandomCourse(List<Courses> courses, Student student) {
         Courses course = courses.get(getRandomNumberInRange(0, courses.size() - 1));
         List<Student> students = course.getStudents();
