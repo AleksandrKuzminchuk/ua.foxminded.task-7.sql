@@ -1,6 +1,7 @@
-package main.java.application;
+package main.java;
 
 import com.github.javafaker.Faker;
+import main.java.application.GeneratorData;
 import main.java.config.PropertiesManager;
 import main.java.dao.CourseDao;
 import main.java.dao.GroupDao;
@@ -17,6 +18,7 @@ import main.java.util.QueryExecutor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 public class Main {
@@ -65,19 +67,23 @@ public class Main {
         studentService.addStudentsOnCourses(students, courses);
 
         List<Student> allSignedOnCurse = studentService.findAllSignedOnCourse(courses.get(courses.size() / 2));
-        logger.error("allSignedOnCurse IS null  ->  must be Implemented!"); //Todo "I done"
+        if (allSignedOnCurse == null || allSignedOnCurse.isEmpty()) {
+        logger.error("allSignedOnCurse IS null  ->  must be Implemented!");
+        }
 
-//        groupDao.count();
+        groupDao.count();
+        List<Group> lessEqual = groupDao.findByStudentsCountsLessEqual(8);
 
-//        groupDao.findByStudentsCountsLessEqual(8);
+        Optional<String> courseName = Optional.of(courses).map(list -> list.get(5)).map(Course::getCourseName);
+        if (courseName.isPresent()) {
+            List<Student> byCourseName = studentDao.findByCourseName(courseName.get());
+            logger.info("byCourseName:" + byCourseName);
+        }
+        studentDao.deleteFromCourse(152, 2);
 
-//        studentDao.findByCourseName("Bachelor of Commerce"); //ToDo the method work but not returns result
+        courseDao.findById(1);
 
-//        studentDao.deleteFromCourse(152, 2);
-
-//        courseDao.findById(1);
-
-//        courseDao.count();
+        courseDao.count();
 
         studentDao.delete(new Student("Bennie", "Sauer"));
 

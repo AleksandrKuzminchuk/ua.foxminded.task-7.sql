@@ -147,8 +147,7 @@ public class CourseDaoImpl implements CourseDao {
         logger.info("find count courses...");
         long result = 0;
         try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
-                QueryConstantsCourses.COUNT_COURSES)
-                ){
+                QueryConstantsCourses.COUNT_COURSES)){
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 result = resultSet.getLong("count");
