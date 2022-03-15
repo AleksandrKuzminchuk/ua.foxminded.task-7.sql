@@ -96,7 +96,6 @@ public class CourseDaoImpl implements CourseDao {
         }
     }
 
-    //    ToDo: I am not understand than this method(I made)
     @Override
     public Optional<Course> findById(Integer studentId) {
         requiredNonNull(studentId);

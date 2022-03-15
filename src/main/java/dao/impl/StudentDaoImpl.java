@@ -121,9 +121,7 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> findByCourseName(String courseName) {
         requiredNonNull(courseName);
         logger.info(format("findByCourseName('%s')", courseName));
-
         List<Student> students = new LinkedList<>();
-
         try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsStudents.SELECTION_BY_COURSE_NAME_QUERY_TEMPLATE);
         ) {
             statement.setString(1, courseName);
@@ -135,7 +133,9 @@ public class StudentDaoImpl implements StudentDao {
             logger.error("Can't find students by course name");
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
+        logger.info(format("FOUND STUDENTS BY COURSE NAME %s", students));
         return students;
+        //ToDo the method work but not returns result
     }
 
     @Override

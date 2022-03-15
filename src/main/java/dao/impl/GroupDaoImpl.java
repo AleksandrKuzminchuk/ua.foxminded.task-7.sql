@@ -1,10 +1,12 @@
 package main.java.dao.impl;
 
 import main.java.dao.GroupDao;
+import main.java.dao.constants.QueryConstantsGroups;
 import main.java.exceptions.ExceptionsHandlingConstants;
 import main.java.exceptions.NoDBPropertiesException;
 import main.java.model.Group;
 import main.java.util.ConnectionUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 
 import java.sql.PreparedStatement;
@@ -18,16 +20,7 @@ import static java.lang.String.format;
 
 public class GroupDaoImpl implements GroupDao {
 
-    public static final String SAVE_ALL_GROUPS = "INSERT INTO groups (group_name) VALUES (?)";
-    public static final String FIND_BY_STUDENTS_COUNTS_LESS_EQUAL =
-            "SELECT groups.group_id, groups.group_name, COUNT(students.student_id) " +
-                    "FROM public.groups " +
-                    "LEFT JOIN students ON students.group_id = groups.group_id " +
-                    "GROUP BY groups.group_id " +
-                    "HAVING COUNT(*) <= ?" +
-                    "ORDER BY groups.group_id";
     private static final Logger logger = Logger.getLogger(GroupDaoImpl.class);
-    private static final String FIND_ALL = "SELECT groups.group_id, groups.group_name FROM groups";
 
     private final ConnectionUtils connectionUtils;
 
@@ -39,20 +32,8 @@ public class GroupDaoImpl implements GroupDao {
     public void saveAll(List<Group> groups) {
         requiredNonNull(groups);
         logger.info(format("saving %d groups...", groups.size()));
-        logger.info(format("saving %s...", groups));
-        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(SAVE_ALL_GROUPS)) {
-            for (Group group : groups) {
-                statement.setString(1, group.getGroupName());
-                statement.addBatch();
-                logger.info(format("%s SAVED", groups));
-            }
-            statement.executeBatch();
-            logger.info(format("All %d groups saved SUCCESSFULLY", groups.size()));
-        } catch (SQLException e) {
-            logger.error("Can't save all groups", e);
-        }
-
-
+        groups.forEach(this::save);
+        logger.info(format("All %d groups saved SUCCESSFULLY", groups.size()));
     }
 
     @Override
@@ -62,7 +43,7 @@ public class GroupDaoImpl implements GroupDao {
         List<Group> groups = new LinkedList<>();
 
         try (PreparedStatement statement = connectionUtils.getConnection()
-                .prepareStatement(FIND_BY_STUDENTS_COUNTS_LESS_EQUAL)) {
+                .prepareStatement(QueryConstantsGroups.FIND_BY_STUDENTS_COUNTS_LESS_EQUAL)) {
             statement.setInt(1, count);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -80,8 +61,7 @@ public class GroupDaoImpl implements GroupDao {
     public List<Group> findAll() {
         logger.info("getAll()...");
         List<Group> groups = new LinkedList<>();
-
-        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(FIND_ALL)) {
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsGroups.FIND_ALL)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 groups.add(extract(resultSet));
@@ -100,44 +80,126 @@ public class GroupDaoImpl implements GroupDao {
                 resultSet.getString("group_name"));
     }
 
-    private void requiredNonNull(Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
-        }
-    }
-
     @Override
     public Optional<Group> save(Group entity) {
-        return Optional.empty();//ToDo::implement me
+        requiredNonNull(entity);
+        logger.info(format("saving %s...", entity));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsGroups.SAVE_GROUP,
+                new String[]{"group_id"})
+                ) {
+            statement.setString(1, entity.getGroupName());
+            statement.executeUpdate();
+            ResultSet generatedKey = statement.getGeneratedKeys();
+            generatedKey.next();
+            Integer groupId = generatedKey.getInt("group_id");
+            entity.setGroupId(groupId);
+            Optional<Group> result = Optional.of(entity);
+            logger.info(format("%s SAVED", entity));
+            return result;
+        } catch (SQLException e) {
+            logger.error("Can't save group", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+        //ToDo::implement me
     }
 
     @Override
-    public Optional<Group> findById(Integer integer) {
-        return Optional.empty();//ToDo::implement me
+    public Optional<Group> findById(Integer groupId) {
+        requiredNonNull(groupId);
+        logger.info(format("findById('%d')", groupId));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.FIND_BY_GROUP_ID)
+                ){
+            statement.setInt(1,groupId);
+            ResultSet resultSet = statement.executeQuery();
+            Group result = resultSet.next() ? extract(resultSet) : null;
+            logger.info(format("%s FOUND", result));
+            return Optional.ofNullable(result);
+        } catch (SQLException e) {
+            logger.error("Can't find group by Id", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+        //ToDo::implement me
     }
 
     @Override
     public boolean existsById(Integer integer) {
-        return false;
+        throw new NotImplementedException("Method 'existsById' not implemented");
     }
 
     @Override
     public long count() {
-        return 0;//ToDo::implement me
+        logger.info("find count groups...");
+        long result = 0;
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.COUNT_GROUPS)
+                ){
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                result = resultSet.getLong("count");
+            }
+            logger.info(format("FOUND COUNT (%d) groups", result));
+            return result;
+        } catch (SQLException e) {
+            logger.error("Can't find count groups", e);
+            throw new NotImplementedException(e.getLocalizedMessage());
+        }
+        //ToDo::implement me
     }
 
     @Override
-    public void deleteById(Integer integer) {
+    public void deleteById(Integer groupId) {
+        requiredNonNull(groupId);
+        logger.info(format("deleteById('%d')", groupId));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.DELETE_BY_ID_GROUP)
+                ){
+            statement.setInt(1, groupId);
+            statement.executeUpdate();
+            logger.info(format("group with id '%d' DELETED", groupId));
+        } catch (SQLException e) {
+            logger.error("Can't delete group by id '%d'", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
 //ToDo::implement me
     }
 
     @Override
-    public void delete(Group entity) {
+    public void delete(Group groupName) {
+        requiredNonNull(groupName);
+        logger.info(format("delete group by name '%s'", groupName.getGroupName()));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.DELETE_GROUPS)
+                ){
+            statement.setString(1, groupName.getGroupName());
+            statement.executeUpdate();
+            logger.info(format("delete group by name '%s'", groupName.getGroupName()));
+        } catch (SQLException e) {
+            logger.error("Can't delete group by name", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
 //ToDo::implement me
     }
 
     @Override
     public void deleteAll() {
+        logger.info("delete all groups");
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.DELETE_ALL_GROUPS)
+                ) {
+            statement.executeUpdate();
+            logger.info("DELETED ALL groups");
+        } catch (SQLException e) {
+            logger.error("Can't delete all groups");
+           throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+
 //ToDo::implement me
+    }
+
+    private void requiredNonNull(Object o) {
+        if (o == null) {
+            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
+        }
     }
 }

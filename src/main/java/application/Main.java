@@ -47,7 +47,7 @@ public class Main {
         GroupDao groupDao = new GroupDaoImpl(connectionUtils);
         groupDao.saveAll(generatorData.generateGroup(15));
         List<Group> allGroups = groupDao.findAll();
-        List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(10);
+        List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(1);
         logger.info(groupsByStudents);
 
 
@@ -59,11 +59,24 @@ public class Main {
 
         List<Student> students = studentDao.findAll();
         List<Course> courses = courseDao.findAll();
-        StudentService studentService = new StudentService(courseDao, random);
+
+
+        StudentService studentService = new StudentService(courseDao, random, connectionUtils);
         studentService.addStudentsOnCourses(students, courses);
 
-        List<Student> allSignedOnCurse = studentService.findAllSignedOnCurse(courses.get(courses.size() / 2));
-        logger.error("allSignedOnCurse IS null  ->  must be Implemented!");
+//        List<Student> allSignedOnCurse = studentService.findAllSignedOnCurse(courses.get(courses.size() / 2));
+//        logger.error("allSignedOnCurse IS null  ->  must be Implemented!"); //Todo "I done"
+
+//        groupDao.count();
+
+//        groupDao.findByStudentsCountsLessEqual(8);
+
+//        studentDao.findByCourseName("Bachelor of Commerce"); //ToDo the method work but not returns result
+
+//        studentDao.deleteFromCourse(152, 2);
+
+//        courseDao.findById(1);
+
 
     }
 

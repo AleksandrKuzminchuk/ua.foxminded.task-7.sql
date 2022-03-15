@@ -4,7 +4,7 @@ public class QueryConstantsCourses {
 
     public static final String SAVE_COURSE = "INSERT INTO courses (course_name, course_description) VALUES (?, ?)";
 
-    public static final String INSERTION_QUERY_TEMPLATE_IN_STUDENTS_COURSE_TABLE = "INSERT INTO students_courses (course_id, student_id) VALUES (?, ?)";
+    public static final String INSERTION_QUERY_TEMPLATE_IN_STUDENTS_COURSE_TABLE = "INSERT INTO students_courses (student_id, course_id) VALUES (?, ?)";
 
     public static final String FIND_ALL = "SELECT course_id, course_name, course_description FROM public.courses";
 

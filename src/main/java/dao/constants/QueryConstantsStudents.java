@@ -7,9 +7,9 @@ public class QueryConstantsStudents {
                     "FROM students_courses INNER JOIN students " +
                     "ON students_courses.student_id = students.student_id " +
                     "INNER JOIN courses " +
-                    "ON students_courses.course_id = course.course_id " +
+                    "ON students_courses.course_id = courses.course_id " +
                     "WHERE courses.course_name = ?" +
-                    "ORDER BY students.students_id";
+                    "ORDER BY students.student_id";
 
     public static final String SAVE_STUDENT = "INSERT INTO students (first_name, last_name, group_id) VALUES (?, ?, ?)";
     public static final String FIND_BY_ID_STUDENT = "SELECT * FROM students WHERE student_id = ?";
