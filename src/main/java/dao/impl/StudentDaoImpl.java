@@ -184,12 +184,38 @@ public class StudentDaoImpl implements StudentDao {
 
     @Override
     public long count() {
-        throw new NotImplementedException("Method 'count' not implemented");
+        logger.info("find count students...");
+        long result = 0;
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsStudents.COUNT_STUDENTS)
+                ){
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                result = resultSet.getLong("count");
+            }
+            logger.info(format("FOUND COUNT (%d) students", result));
+            return result;
+        }catch (SQLException e){
+            logger.info("Can't find count students", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public void delete(Student entity) {
-        throw new NotImplementedException("Method 'delete' not implemented");
+        requiredNonNull(entity);
+        logger.info(format("delete student by name and surname (%s %s)", entity.getFirstName(), entity.getLastName()));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsStudents.DELETE_STUDENT)
+                ){
+            statement.setString(1, entity.getFirstName());
+            statement.setString(2, entity.getLastName());
+            statement.executeUpdate();
+            logger.info(format("deleted student by name and surname (%s %s)", entity.getFirstName(), entity.getLastName()));
+        }catch (SQLException e){
+            logger.error("Can't delete student by name", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     @Override

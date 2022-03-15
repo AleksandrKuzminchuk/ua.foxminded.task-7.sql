@@ -150,7 +150,7 @@ public class GroupDaoImpl implements GroupDao {
     @Override
     public void deleteById(Integer groupId) {
         requiredNonNull(groupId);
-        logger.info(format("deleteById('%d')", groupId));
+        logger.info(format("deleteById ('%d') group", groupId));
         try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsGroups.DELETE_BY_ID_GROUP)
                 ){
@@ -173,7 +173,7 @@ public class GroupDaoImpl implements GroupDao {
                 ){
             statement.setString(1, groupName.getGroupName());
             statement.executeUpdate();
-            logger.info(format("delete group by name '%s'", groupName.getGroupName()));
+            logger.info(format("deleted group by name '%s'", groupName.getGroupName()));
         } catch (SQLException e) {
             logger.error("Can't delete group by name", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
@@ -183,7 +183,7 @@ public class GroupDaoImpl implements GroupDao {
 
     @Override
     public void deleteAll() {
-        logger.info("delete all groups");
+        logger.info("delete all groups...");
         try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsGroups.DELETE_ALL_GROUPS)
                 ) {

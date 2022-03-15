@@ -17,5 +17,7 @@ public class QueryConstantsStudents {
     public static final String DELETE_BY_ID_STUDENT = "DELETE FROM students WHERE student_id = ?";
     public static final String ASSIGN_TO_COURSE = "INSERT INTO students_courses (course_id, student_id) VALUES (?, ?)";
     public static final String DELETE_FROM_COURSE = "DELETE FROM students_courses WHERE student_id = ? AND course_id = ?";
+    public static final String COUNT_STUDENTS = "SELECT COUNT(*) FROM public.students";
+    public static final String DELETE_STUDENT = "DELETE FROM public.students WHERE first_name = ? AND last_name = ?";
 }
 

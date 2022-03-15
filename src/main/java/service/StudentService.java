@@ -49,11 +49,11 @@ public class StudentService {
         }
     }
 
-    public List<Student> findAllSignedOnCurse(Course course) {
+    public List<Student> findAllSignedOnCourse(Course course) {
         // TODO find all students signed to required course
         // TODO (query to students_courses table +JOIN students)
         requiredNonNull(course);
-        logger.info(format("findAllSignedOnCurseID = '%d'", course.getCourseId()));
+        logger.info(format("findAllSignedOnCourseID = '%d'", course.getCourseId()));
         List<Student> students = new LinkedList<>();
         try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(SELECTION_BY_COURSE_ID_QUERY_TEMPLATE)
                 ){
@@ -63,10 +63,10 @@ public class StudentService {
                 students.add(extract(resultSet));
             }
         } catch (SQLException e) {
-            logger.error("Can't findAllSignedOnCurse", e);
+            logger.error("Can't findAllSignedOnCourse", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-        logger.info(students);
+        logger.info(format("FOUND Students signed on course - %d, %s", course.getCourseId(), students));
         return students;//ToDo-> implement me !
     }
 

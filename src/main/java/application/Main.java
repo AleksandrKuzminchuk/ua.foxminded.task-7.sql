@@ -64,8 +64,8 @@ public class Main {
         StudentService studentService = new StudentService(courseDao, random, connectionUtils);
         studentService.addStudentsOnCourses(students, courses);
 
-//        List<Student> allSignedOnCurse = studentService.findAllSignedOnCurse(courses.get(courses.size() / 2));
-//        logger.error("allSignedOnCurse IS null  ->  must be Implemented!"); //Todo "I done"
+        List<Student> allSignedOnCurse = studentService.findAllSignedOnCourse(courses.get(courses.size() / 2));
+        logger.error("allSignedOnCurse IS null  ->  must be Implemented!"); //Todo "I done"
 
 //        groupDao.count();
 
@@ -77,6 +77,9 @@ public class Main {
 
 //        courseDao.findById(1);
 
+//        courseDao.count();
+
+        studentDao.delete(new Student("Bennie", "Sauer"));
 
     }
 

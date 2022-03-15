@@ -144,22 +144,67 @@ public class CourseDaoImpl implements CourseDao {
 
     @Override
     public long count() {
-        throw new NotImplementedException("Method 'existsById' not implemented");
+        logger.info("find count courses...");
+        long result = 0;
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsCourses.COUNT_COURSES)
+                ){
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                result = resultSet.getLong("count");
+            }
+            logger.info(format("FOUND COUNT (%d) courses", result));
+            return result;
+        } catch (SQLException e) {
+            logger.error("Can't find count courses");
+            throw new NotImplementedException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public void deleteById(Integer coursesId) {
-        throw new NotImplementedException("Method 'count' not implemented");
+        requiredNonNull(coursesId);
+        logger.info(format("deleteById ('%d') course", coursesId));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsCourses.DELETE_BY_ID_COURSE)
+                ){
+            statement.setInt(1, coursesId);
+            statement.executeUpdate();
+            logger.info(format("course with id '%d' DELETED", coursesId));
+        }catch (SQLException e){
+            logger.error("Can't delete course by id '%d'", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public void delete(Course course) {
-        throw new NotImplementedException("Method 'delete' not implemented");
+        requiredNonNull(course);
+        logger.info(format("delete course by name '%s'", course.getCourseName()));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsCourses.DELETE_BY_COURSE)
+                ){
+            statement.setString(1, course.getCourseName());
+            statement.executeUpdate();
+            logger.info(format("delete course by name '%s'", course.getCourseName()));
+        }catch (SQLException e){
+            logger.error("Can't delete course by name", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     @Override
     public void deleteAll() {
-        throw new NotImplementedException("Method 'deleteAll' not implemented");
+        logger.info("delete all courses...");
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsCourses.DELETE_ALL_COURSES)
+                ){
+            statement.executeUpdate();
+            logger.info("DELETED ALL courses");
+        }catch (SQLException e){
+            logger.error("Can't delete all courses", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     private void requiredNonNull(Object o) {

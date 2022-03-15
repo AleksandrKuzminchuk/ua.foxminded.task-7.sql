@@ -13,6 +13,10 @@ public class Course {
     public Course() {
     }
 
+    public Course(String courseName) {
+        this.courseName = courseName;
+    }
+
     public Course(Integer courseId, String courseName, String courseDescription) {
         this.courseId = courseId;
         this.courseName = courseName;

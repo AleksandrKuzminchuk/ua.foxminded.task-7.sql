@@ -23,8 +23,6 @@ public class GeneratorData {
         this.random = generatorNumber;
     }
 
-    private static final Logger logger = Logger.getLogger(GeneratorData.class);
-
     public List<Group> generateGroup(Integer number) {
         List<Group> groups = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
