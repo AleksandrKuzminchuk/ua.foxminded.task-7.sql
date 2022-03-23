@@ -1,8 +1,8 @@
-package main.java.util;
+package util;
 
 
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
 import org.apache.log4j.Logger;
 
 import java.io.*;

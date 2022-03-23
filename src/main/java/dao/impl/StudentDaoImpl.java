@@ -1,13 +1,13 @@
-package main.java.dao.impl;
+package dao.impl;
 
-import main.java.dao.StudentDao;
-import main.java.dao.constants.QueryConstantsStudents;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Student;
-import main.java.util.ConnectionUtils;
+import dao.StudentDao;
+import dao.constants.QueryConstantsStudents;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
+import model.Student;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import util.ConnectionUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,6 +22,14 @@ import static java.lang.String.format;
 public class StudentDaoImpl implements StudentDao {
 
     private static final Logger logger = Logger.getLogger(StudentDaoImpl.class);
+    private static final String SELECTION_BY_COURSE_ID_QUERY_TEMPLATE =
+            "SELECT students.student_id, students.group_id, students.first_name, students.last_name " +
+                    "FROM students_courses INNER JOIN students " +
+                    "ON students_courses.student_id = students.student_id " +
+                    "INNER JOIN courses " +
+                    "ON students_courses.course_id = courses.course_id " +
+                    "WHERE courses.course_id = ?" +
+                    "ORDER BY students.student_id";
 
     private final ConnectionUtils connectionUtils;
 
@@ -35,8 +43,7 @@ public class StudentDaoImpl implements StudentDao {
         logger.info(format("saving %s...", student));
 
         try (PreparedStatement statement = connectionUtils.getConnection()
-                .prepareStatement(QueryConstantsStudents.SAVE_STUDENT, new String[]{"student_id"})
-        ) {
+                .prepareStatement(QueryConstantsStudents.SAVE_STUDENT, new String[]{"student_id"})) {
             statement.setString(1, student.getFirstName());
             statement.setString(2, student.getLastName());
             if (student.getGroupId() != null) {
@@ -80,8 +87,8 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> findAll() {
         List<Student> students = new LinkedList<>();
         logger.info("findAll...");
-        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsStudents.FIND_ALL_STUDENTS);
-        ) {
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsStudents.FIND_ALL_STUDENTS)) {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 students.add(extract(resultSet));
@@ -97,8 +104,8 @@ public class StudentDaoImpl implements StudentDao {
     public void deleteById(Integer studentId) {
         requiredNonNull(studentId);
         logger.info(format("deleteById('%d')", studentId));
-        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsStudents.DELETE_BY_ID_STUDENT)
-        ) {
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsStudents.DELETE_BY_ID_STUDENT)) {
             statement.setInt(1, studentId);
             statement.executeUpdate();
             logger.info(format("student with id '%d' DELETED", studentId));
@@ -167,6 +174,23 @@ public class StudentDaoImpl implements StudentDao {
         }
     }
 
+    @Override
+    public List<Student> findAllSignedOnCourse(Integer courseId) {
+        List<Student> students = new LinkedList<>();
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(SELECTION_BY_COURSE_ID_QUERY_TEMPLATE)) {
+            statement.setInt(1, courseId);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                students.add(extract(resultSet));
+            }
+        } catch (SQLException e) {
+            logger.error("Can't findAllSignedOnCourse", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+        return students;
+    }
+
     private Student extract(ResultSet resultSet) throws SQLException {
         requiredNonNull(resultSet);
         Student student = new Student(
@@ -186,16 +210,16 @@ public class StudentDaoImpl implements StudentDao {
     public long count() {
         logger.info("find count students...");
         long result = 0;
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsStudents.COUNT_STUDENTS)
-                ){
+        ) {
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 result = resultSet.getLong("count");
             }
             logger.info(format("FOUND COUNT (%d) students", result));
             return result;
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.info("Can't find count students", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
@@ -205,14 +229,14 @@ public class StudentDaoImpl implements StudentDao {
     public void delete(Student entity) {
         requiredNonNull(entity);
         logger.info(format("delete student by name and surname (%s %s)", entity.getFirstName(), entity.getLastName()));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsStudents.DELETE_STUDENT)
-                ){
+        ) {
             statement.setString(1, entity.getFirstName());
             statement.setString(2, entity.getLastName());
             statement.executeUpdate();
             logger.info(format("deleted student by name and surname (%s %s)", entity.getFirstName(), entity.getLastName()));
-        }catch (SQLException e){
+        } catch (SQLException e) {
             logger.error("Can't delete student by name", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }

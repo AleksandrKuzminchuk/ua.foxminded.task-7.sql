@@ -1,4 +1,4 @@
-package main.java.dao.constants;
+package dao.constants;
 
 public class QueryConstantsStudents {
 

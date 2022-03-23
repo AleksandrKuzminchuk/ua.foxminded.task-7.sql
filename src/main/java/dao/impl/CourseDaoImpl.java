@@ -1,12 +1,12 @@
-package main.java.dao.impl;
+package dao.impl;
 
-import main.java.dao.CourseDao;
-import main.java.dao.constants.QueryConstantsCourses;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Course;
-import main.java.model.Student;
-import main.java.util.ConnectionUtils;
+import dao.CourseDao;
+import dao.constants.QueryConstantsCourses;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
+import model.Course;
+import model.Student;
+import util.ConnectionUtils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 
@@ -38,7 +38,7 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public void addStudentsAndCourses(Student student, Course course) {
+    public void addStudentAndCourse(Student student, Course course) {
         requiredNonNull(student, course);
         logger.info(format("Adding student_id '%s' and course_id '%s' to students_courses table", student.getStudentId(), course.getCourseId()));
         try (PreparedStatement statement = connectionUtils.getConnection()

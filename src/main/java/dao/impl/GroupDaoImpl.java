@@ -1,13 +1,13 @@
-package main.java.dao.impl;
+package dao.impl;
 
-import main.java.dao.GroupDao;
-import main.java.dao.constants.QueryConstantsGroups;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Group;
-import main.java.util.ConnectionUtils;
+import dao.GroupDao;
+import dao.constants.QueryConstantsGroups;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
+import model.Group;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import util.ConnectionUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -84,9 +84,8 @@ public class GroupDaoImpl implements GroupDao {
     public Optional<Group> save(Group entity) {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(QueryConstantsGroups.SAVE_GROUP,
-                new String[]{"group_id"})
-                ) {
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsGroups.SAVE_GROUP, new String[]{"group_id"})) {
             statement.setString(1, entity.getGroupName());
             statement.executeUpdate();
             ResultSet generatedKey = statement.getGeneratedKeys();
@@ -100,17 +99,15 @@ public class GroupDaoImpl implements GroupDao {
             logger.error("Can't save group", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-        //ToDo::implement me
     }
 
     @Override
     public Optional<Group> findById(Integer groupId) {
         requiredNonNull(groupId);
         logger.info(format("findById('%d')", groupId));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
-                QueryConstantsGroups.FIND_BY_GROUP_ID)
-                ){
-            statement.setInt(1,groupId);
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsGroups.FIND_BY_GROUP_ID)) {
+            statement.setInt(1, groupId);
             ResultSet resultSet = statement.executeQuery();
             Group result = resultSet.next() ? extract(resultSet) : null;
             logger.info(format("%s FOUND", result));
@@ -119,7 +116,6 @@ public class GroupDaoImpl implements GroupDao {
             logger.error("Can't find group by Id", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-        //ToDo::implement me
     }
 
     @Override
@@ -131,11 +127,10 @@ public class GroupDaoImpl implements GroupDao {
     public long count() {
         logger.info("find count groups...");
         long result = 0;
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
-                QueryConstantsGroups.COUNT_GROUPS)
-                ){
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsGroups.COUNT_GROUPS)) {
             ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 result = resultSet.getLong("count");
             }
             logger.info(format("FOUND COUNT (%d) groups", result));
@@ -144,16 +139,15 @@ public class GroupDaoImpl implements GroupDao {
             logger.error("Can't find count groups", e);
             throw new NotImplementedException(e.getLocalizedMessage());
         }
-        //ToDo::implement me
     }
 
     @Override
     public void deleteById(Integer groupId) {
         requiredNonNull(groupId);
         logger.info(format("deleteById ('%d') group", groupId));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsGroups.DELETE_BY_ID_GROUP)
-                ){
+        ) {
             statement.setInt(1, groupId);
             statement.executeUpdate();
             logger.info(format("group with id '%d' DELETED", groupId));
@@ -161,16 +155,15 @@ public class GroupDaoImpl implements GroupDao {
             logger.error("Can't delete group by id '%d'", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-//ToDo::implement me
     }
 
     @Override
     public void delete(Group groupName) {
         requiredNonNull(groupName);
         logger.info(format("delete group by name '%s'", groupName.getGroupName()));
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsGroups.DELETE_GROUPS)
-                ){
+        ) {
             statement.setString(1, groupName.getGroupName());
             statement.executeUpdate();
             logger.info(format("deleted group by name '%s'", groupName.getGroupName()));
@@ -178,23 +171,20 @@ public class GroupDaoImpl implements GroupDao {
             logger.error("Can't delete group by name", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-//ToDo::implement me
     }
 
     @Override
     public void deleteAll() {
         logger.info("delete all groups...");
-        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
                 QueryConstantsGroups.DELETE_ALL_GROUPS)
-                ) {
+        ) {
             statement.executeUpdate();
             logger.info("DELETED ALL groups");
         } catch (SQLException e) {
             logger.error("Can't delete all groups");
-           throw new NoDBPropertiesException(e.getLocalizedMessage());
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
-
-//ToDo::implement me
     }
 
     private void requiredNonNull(Object o) {

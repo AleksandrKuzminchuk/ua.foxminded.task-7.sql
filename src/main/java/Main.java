@@ -1,20 +1,16 @@
-package main.java;
-
 import com.github.javafaker.Faker;
-import main.java.application.GeneratorData;
-import main.java.config.PropertiesManager;
-import main.java.dao.CourseDao;
-import main.java.dao.GroupDao;
-import main.java.dao.StudentDao;
-import main.java.dao.impl.CourseDaoImpl;
-import main.java.dao.impl.GroupDaoImpl;
-import main.java.dao.impl.StudentDaoImpl;
-import main.java.model.Course;
-import main.java.model.Group;
-import main.java.model.Student;
-import main.java.service.StudentService;
-import main.java.util.ConnectionUtils;
-import main.java.util.QueryExecutor;
+import application.GeneratorData;
+import config.PropertiesManager;
+import dao.*;
+import dao.impl.CourseDaoImpl;
+import dao.impl.GroupDaoImpl;
+import dao.impl.StudentDaoImpl;
+import model.Course;
+import model.Group;
+import model.Student;
+import service.StudentService;
+import util.ConnectionUtils;
+import util.QueryExecutor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -63,10 +59,10 @@ public class Main {
         List<Course> courses = courseDao.findAll();
 
 
-        StudentService studentService = new StudentService(courseDao, random, connectionUtils);
-        studentService.addStudentsOnCourses(students, courses);
+        StudentService studentService = new StudentService(courseDao, studentDao);
+        studentService.addStudentOnCourses(students.get(1), courses);
 
-        List<Student> allSignedOnCurse = studentService.findAllSignedOnCourse(courses.get(courses.size() / 2));
+        List<Student> allSignedOnCurse = studentService.findAllSignedOnCourse(courses.get(courses.size() / 2).getCourseId());
         if (allSignedOnCurse == null || allSignedOnCurse.isEmpty()) {
         logger.error("allSignedOnCurse IS null  ->  must be Implemented!");
         }
