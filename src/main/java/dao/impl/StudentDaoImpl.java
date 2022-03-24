@@ -1,13 +1,18 @@
-package dao.impl;
+package main.java.dao.impl;
 
-import dao.StudentDao;
-import dao.constants.QueryConstantsStudents;
-import exceptions.ExceptionsHandlingConstants;
-import exceptions.NoDBPropertiesException;
-import model.Student;
+
+import main.java.dao.StudentDao;
+import main.java.dao.constants.QueryConstantsCourses;
+import main.java.dao.constants.QueryConstantsStudents;
+import main.java.exceptions.ExceptionsHandlingConstants;
+import main.java.exceptions.NoDBPropertiesException;
+import main.java.model.Course;
+import main.java.model.Student;
+import main.java.util.ConnectionUtils;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
-import util.ConnectionUtils;
+
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,19 +27,27 @@ import static java.lang.String.format;
 public class StudentDaoImpl implements StudentDao {
 
     private static final Logger logger = Logger.getLogger(StudentDaoImpl.class);
-    private static final String SELECTION_BY_COURSE_ID_QUERY_TEMPLATE =
-            "SELECT students.student_id, students.group_id, students.first_name, students.last_name " +
-                    "FROM students_courses INNER JOIN students " +
-                    "ON students_courses.student_id = students.student_id " +
-                    "INNER JOIN courses " +
-                    "ON students_courses.course_id = courses.course_id " +
-                    "WHERE courses.course_id = ?" +
-                    "ORDER BY students.student_id";
 
     private final ConnectionUtils connectionUtils;
 
     public StudentDaoImpl(ConnectionUtils connectionUtils) {
         this.connectionUtils = connectionUtils;
+    }
+
+    @Override
+    public void addStudentAndCourse(Student student, Course course) {
+        requiredNonNull(student, course);
+        logger.info(format("Adding student_id '%s' and course_id '%s' to students_courses table", student.getStudentId(), course.getCourseId()));
+        try (PreparedStatement statement = connectionUtils.getConnection()
+                .prepareStatement(QueryConstantsStudents.INSERTION_QUERY_TEMPLATE_IN_STUDENTS_COURSE_TABLE)) {
+            statement.setInt(1, student.getStudentId());
+            statement.setInt(2, course.getCourseId());
+            statement.executeUpdate();
+            logger.info("Added SUCCESSFULLY");
+        } catch (SQLException e) {
+            logger.error("Can't add students and courses");
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -68,7 +81,6 @@ public class StudentDaoImpl implements StudentDao {
     @Override
     public Optional<Student> findById(Integer studentId) {
         requiredNonNull(studentId);
-
         logger.info(format("findById('%d')", studentId));
         try (PreparedStatement statement = connectionUtils.getConnection()
                 .prepareStatement(QueryConstantsStudents.FIND_BY_ID_STUDENT)) {
@@ -142,7 +154,6 @@ public class StudentDaoImpl implements StudentDao {
         }
         logger.info(format("FOUND STUDENTS BY COURSE NAME %s", students));
         return students;
-        //ToDo the method work but not returns result
     }
 
     @Override
@@ -178,7 +189,7 @@ public class StudentDaoImpl implements StudentDao {
     public List<Student> findAllSignedOnCourse(Integer courseId) {
         List<Student> students = new LinkedList<>();
         try (PreparedStatement statement = connectionUtils.getConnection()
-                .prepareStatement(SELECTION_BY_COURSE_ID_QUERY_TEMPLATE)) {
+                .prepareStatement(QueryConstantsStudents.SELECTION_BY_COURSE_ID_QUERY_TEMPLATE)) {
             statement.setInt(1, courseId);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -243,12 +254,53 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
+    public void updateStudent(Student student) {
+        requiredNonNull(student);
+        logger.info(format("UPDATE with ID - %d", student.getStudentId()));
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsStudents.UPDATE_STUDENT)
+                ){
+            statement.setString(1, student.getFirstName());
+            statement.setString(2, student.getLastName());
+            statement.setInt(3, student.getStudentId());
+            statement.executeUpdate();
+            logger.info(format("UPDATED %s SUCCESSFULLY", student));
+        } catch (SQLException e) {
+            logger.error("Can't UPDATE student", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void addStudentOnCourses(Student student, List<Course> courses) {
+        requiredNonNull(student, courses);
+        logger.info(format("ADDING... %s on %s", student, courses));
+        courses.forEach(course -> addStudentAndCourse(student, course));
+        logger.info(format("ADDED %s on %s", student, courses));
+    }
+
+    @Override
     public void deleteAll() {
-        throw new NotImplementedException("Method 'deleteAll' not implemented");
+        logger.info("DELETE ALL STUDENTS");
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsStudents.DELETE_ALL_STUDENTS)
+                ){
+            statement.executeUpdate();
+            logger.info("DELETED ALL STUDENTS");
+        }catch (SQLException e){
+            logger.error("Can't delete students");
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
     }
 
     private void requiredNonNull(Object o) {
         if (o == null) {
+            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
+        }
+    }
+
+    private void requiredNonNull(Object o, Object o2) {
+        if (o == null && o2 == null) {
             throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
         }
     }

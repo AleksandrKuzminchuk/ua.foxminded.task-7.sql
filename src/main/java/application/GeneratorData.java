@@ -1,12 +1,11 @@
-package application;
+package main.java.application;
 
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
-import model.Course;
-import model.Group;
-import model.Student;
+import main.java.model.Course;
+import main.java.model.Group;
+import main.java.model.Student;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.log4j.Logger;
 
 import java.util.*;
 import java.util.stream.IntStream;

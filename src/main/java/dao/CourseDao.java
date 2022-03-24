@@ -1,15 +1,15 @@
-package dao;
+package main.java.dao;
 
-import model.Course;
-import model.Student;
+import main.java.model.Course;
+import main.java.model.Student;
 
 import java.util.List;
 
 public interface CourseDao extends CrudRepository<Course, Integer> {
 
-    void saveAll(List<Course> groups);
+    void updateCourse(Course course);
+
+    void saveAll(List<Course> courses);
 
     List<Course> findByStudentId(Integer studentId);
-
-    void addStudentAndCourse(Student students, Course course);
 }

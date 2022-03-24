@@ -1,16 +1,21 @@
+package main.java;
+
 import com.github.javafaker.Faker;
-import application.GeneratorData;
-import config.PropertiesManager;
-import dao.*;
-import dao.impl.CourseDaoImpl;
-import dao.impl.GroupDaoImpl;
-import dao.impl.StudentDaoImpl;
-import model.Course;
-import model.Group;
-import model.Student;
-import service.StudentService;
-import util.ConnectionUtils;
-import util.QueryExecutor;
+
+import main.java.application.GeneratorData;
+import main.java.config.PropertiesManager;
+import main.java.dao.CourseDao;
+import main.java.dao.GroupDao;
+import main.java.dao.StudentDao;
+import main.java.dao.impl.CourseDaoImpl;
+import main.java.dao.impl.GroupDaoImpl;
+import main.java.dao.impl.StudentDaoImpl;
+import main.java.model.Course;
+import main.java.model.Group;
+import main.java.model.Student;
+import main.java.service.impl.StudentServiceImpl;
+import main.java.util.ConnectionUtils;
+import main.java.util.QueryExecutor;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -59,7 +64,7 @@ public class Main {
         List<Course> courses = courseDao.findAll();
 
 
-        StudentService studentService = new StudentService(courseDao, studentDao);
+        StudentServiceImpl studentService = new StudentServiceImpl(courseDao, studentDao);
         studentService.addStudentOnCourses(students.get(1), courses);
 
         List<Student> allSignedOnCurse = studentService.findAllSignedOnCourse(courses.get(courses.size() / 2).getCourseId());
@@ -81,7 +86,11 @@ public class Main {
 
         courseDao.count();
 
-        studentDao.delete(new Student("Bennie", "Sauer"));
+        studentDao.updateStudent(new Student(2,"Oleksandr", "Kuzminchuk"));
+
+        courseDao.updateCourse(new Course(1, "Match of Business", "Course of Master of Match"));
+
+        groupDao.updateGroup(new Group(1, "Kn-56"));
 
     }
 

@@ -1,6 +1,7 @@
-package dao;
+package main.java.dao;
 
-import model.Student;
+import main.java.model.Course;
+import main.java.model.Student;
 
 import java.util.List;
 
@@ -15,4 +16,10 @@ public interface StudentDao extends CrudRepository<Student, Integer> {
     void deleteFromCourse(Integer studentId, Integer courseId);
 
     List<Student> findAllSignedOnCourse(Integer courseId);
+
+    void updateStudent(Student student);
+
+    void addStudentOnCourses(Student student, List<Course> courses);
+
+    void addStudentAndCourse(Student students, Course course);
 }

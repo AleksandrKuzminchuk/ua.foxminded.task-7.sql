@@ -1,10 +1,8 @@
-package dao.constants;
+package main.java.dao.constants;
 
 public class QueryConstantsCourses {
 
     public static final String SAVE_COURSE = "INSERT INTO courses (course_name, course_description) VALUES (?, ?)";
-
-    public static final String INSERTION_QUERY_TEMPLATE_IN_STUDENTS_COURSE_TABLE = "INSERT INTO students_courses (student_id, course_id) VALUES (?, ?)";
 
     public static final String FIND_ALL = "SELECT course_id, course_name, course_description FROM public.courses";
 
@@ -22,4 +20,6 @@ public class QueryConstantsCourses {
     public static final String DELETE_BY_COURSE = "DELETE FROM public.courses WHERE course_name = ?";
 
     public static final String DELETE_ALL_COURSES = "DELETE FROM public.courses";
+
+    public static final String UPDATE_COURSE = "UPDATE public.courses SET course_name = ?, course_description = ? WHERE course_id = ?";
 }

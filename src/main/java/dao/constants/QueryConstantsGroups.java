@@ -1,6 +1,8 @@
-package dao.constants;
+package main.java.dao.constants;
 
 public class QueryConstantsGroups {
+
+    public static final String UPDATE_GROUP = "UPDATE public.groups SET group_name = ? WHERE group_id = ?";
 
     public static final String COUNT_GROUPS = "SELECT COUNT(*) FROM public.groups";
 

@@ -1,9 +1,10 @@
-package service;
+package main.test.service;
 
-import dao.CourseDao;
-import dao.StudentDao;
-import model.Course;
-import model.Student;
+import main.java.dao.CourseDao;
+import main.java.dao.StudentDao;
+import main.java.model.Course;
+import main.java.model.Student;
+import main.java.service.impl.StudentServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,13 +19,13 @@ import static org.mockito.Mockito.*;
 class StudentServiceTest {
     private static CourseDao courseDaoMock;
     private static StudentDao studentDaoMock;
-    private static StudentService testingStudentService;
+    private static StudentServiceImpl testingStudentService;
 
     @BeforeAll
     static void beforeAll() {
         courseDaoMock = Mockito.mock(CourseDao.class);
         studentDaoMock = Mockito.mock(StudentDao.class);
-        testingStudentService = new StudentService(courseDaoMock, studentDaoMock);
+        testingStudentService = new StudentServiceImpl(courseDaoMock, studentDaoMock);
     }
 
     @Test
@@ -50,12 +51,12 @@ class StudentServiceTest {
         courses.add(courseOne);
         courses.add(courseTwo);
 
-        doNothing().when(courseDaoMock).addStudentAndCourse(preparedStudent, courseOne);
-        doNothing().when(courseDaoMock).addStudentAndCourse(preparedStudent, courseTwo);
+        doNothing().when(studentDaoMock).addStudentAndCourse(preparedStudent, courseOne);
+        doNothing().when(studentDaoMock).addStudentAndCourse(preparedStudent, courseTwo);
 
         testingStudentService.addStudentOnCourses(preparedStudent, courses);
 
-        verify(courseDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseOne);
-        verify(courseDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseTwo);
+        verify(studentDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseOne);
+        verify(studentDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseTwo);
     }
 }

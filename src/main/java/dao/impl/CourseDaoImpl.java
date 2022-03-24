@@ -1,12 +1,13 @@
-package dao.impl;
+package main.java.dao.impl;
 
-import dao.CourseDao;
-import dao.constants.QueryConstantsCourses;
-import exceptions.ExceptionsHandlingConstants;
-import exceptions.NoDBPropertiesException;
-import model.Course;
-import model.Student;
-import util.ConnectionUtils;
+import main.java.dao.CourseDao;
+import main.java.dao.constants.QueryConstantsCourses;
+import main.java.exceptions.ExceptionsHandlingConstants;
+import main.java.exceptions.NoDBPropertiesException;
+import main.java.model.Course;
+import main.java.model.Student;
+import main.java.util.ConnectionUtils;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 
@@ -35,22 +36,6 @@ public class CourseDaoImpl implements CourseDao {
         logger.info(format("saving %d courses...", courses.size()));
         courses.forEach(this::save);
         logger.info(format("All %d courses saved SUCCESSFULLY", courses.size()));
-    }
-
-    @Override
-    public void addStudentAndCourse(Student student, Course course) {
-        requiredNonNull(student, course);
-        logger.info(format("Adding student_id '%s' and course_id '%s' to students_courses table", student.getStudentId(), course.getCourseId()));
-        try (PreparedStatement statement = connectionUtils.getConnection()
-                .prepareStatement(QueryConstantsCourses.INSERTION_QUERY_TEMPLATE_IN_STUDENTS_COURSE_TABLE)) {
-            statement.setInt(1, student.getStudentId());
-            statement.setInt(2, course.getCourseId());
-            statement.executeUpdate();
-            logger.info("Added SUCCESSFULLY");
-        } catch (SQLException e) {
-            logger.error("Can't add students and courses");
-            throw new NoDBPropertiesException(e.getLocalizedMessage());
-        }
     }
 
     @Override
@@ -202,6 +187,24 @@ public class CourseDaoImpl implements CourseDao {
             logger.info("DELETED ALL courses");
         }catch (SQLException e){
             logger.error("Can't delete all courses", e);
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void updateCourse(Course course) {
+        requiredNonNull(course);
+        logger.info(format("UPDATE course by ID - %d",course.getCourseId()));
+        try (PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsCourses.UPDATE_COURSE)
+                ){
+            statement.setString(1, course.getCourseName());
+            statement.setString(2, course.getCourseDescription());
+            statement.setInt(3, course.getCourseId());
+            statement.executeUpdate();
+            logger.info(format("UPDATED %s SUCCESSFULLY", course));
+        }catch (SQLException e){
+            logger.error("Can't UPDATE course",e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
     }

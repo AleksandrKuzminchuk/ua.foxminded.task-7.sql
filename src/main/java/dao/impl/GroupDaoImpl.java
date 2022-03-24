@@ -1,13 +1,15 @@
-package dao.impl;
+package main.java.dao.impl;
 
-import dao.GroupDao;
-import dao.constants.QueryConstantsGroups;
-import exceptions.ExceptionsHandlingConstants;
-import exceptions.NoDBPropertiesException;
-import model.Group;
+import main.java.dao.GroupDao;
+import main.java.dao.constants.QueryConstantsGroups;
+import main.java.exceptions.ExceptionsHandlingConstants;
+import main.java.exceptions.NoDBPropertiesException;
+import main.java.model.Group;
+import main.java.util.ConnectionUtils;
+
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
-import util.ConnectionUtils;
+
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -183,6 +185,23 @@ public class GroupDaoImpl implements GroupDao {
             logger.info("DELETED ALL groups");
         } catch (SQLException e) {
             logger.error("Can't delete all groups");
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void updateGroup(Group group) {
+        requiredNonNull(group);
+        logger.info(format("UPDATE group by ID - %d", group.getGroupId()));
+        try(PreparedStatement statement = connectionUtils.getConnection().prepareStatement(
+                QueryConstantsGroups.UPDATE_GROUP)
+                ){
+            statement.setString(1, group.getGroupName());
+            statement.setInt(2, group.getGroupId());
+            statement.executeUpdate();
+            logger.info(format("UPDATED %s SUCCESSFULLY", group));
+        }catch (SQLException e){
+            logger.error("Can't UPDATE group", e);
             throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
     }

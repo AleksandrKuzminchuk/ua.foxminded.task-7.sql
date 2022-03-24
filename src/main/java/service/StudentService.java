@@ -1,39 +1,25 @@
-package service;
+package main.java.service;
 
-import dao.CourseDao;
-import dao.StudentDao;
-import model.Course;
-import model.Student;
-import org.apache.log4j.Logger;
+import main.java.dao.CrudRepository;
+import main.java.model.Course;
+import main.java.model.Student;
 
 import java.util.List;
 
-import static java.lang.String.format;
+public interface StudentService extends CrudRepository<Student, Integer> {
 
-public class StudentService {
+    void updateStudent(Student student);
 
-    public static final Logger logger = Logger.getLogger(StudentService.class);
+    void addStudentOnCourses(Student student, List<Course> courses);
 
-    private final CourseDao courseDao;
-    private final StudentDao studentDao;
+    List<Student> findAllSignedOnCourse(Integer courseId);
 
-    public StudentService(CourseDao courseDao, StudentDao studentDao) {
-        this.courseDao = courseDao;
-        this.studentDao = studentDao;
-    }
+    List<Student> findByCourseName(String courseName);
 
-    public void addStudentOnCourses(Student student, List<Course> courses) {
-        if (courses != null && !courses.isEmpty())
-            courses.forEach(course -> courseDao.addStudentAndCourse(student, course));
-    }
+    void assignToCourse(Integer studentId, Integer courseId);
 
-    public List<Student> findAllSignedOnCourse(Integer courseId) {
-        // TODO find all students signed to required course
-        // TODO (query to students_courses table +JOIN students)
-        logger.info(format("findAllSignedOnCourseID = '%d'", courseId));
-        List<Student> students = studentDao.findAllSignedOnCourse(courseId);
-        logger.info(format("FOUND Students signed on course - %d, %s", courseId, students));
-        return students;
-    }
+    void deleteFromCourse(Integer studentId, Integer courseId);
+
+    void saveAll(List<Student> students);
 
 }
