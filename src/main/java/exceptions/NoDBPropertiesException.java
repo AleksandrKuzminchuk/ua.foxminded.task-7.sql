@@ -1,4 +1,4 @@
-package main.java.exceptions;
+package exceptions;
 
 @SuppressWarnings("serial")
 public class NoDBPropertiesException extends RuntimeException {

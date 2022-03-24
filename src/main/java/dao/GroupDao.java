@@ -1,6 +1,6 @@
-package main.java.dao;
+package dao;
 
-import main.java.model.Group;
+import model.Group;
 
 import java.util.List;
 

@@ -1,13 +1,13 @@
-package main.java.service.impl;
+package service.impl;
 
-import main.java.dao.CourseDao;
-import main.java.dao.StudentDao;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.model.Course;
-import main.java.model.Student;
-import main.java.service.StudentService;
+import dao.CourseDao;
+import dao.StudentDao;
+import exceptions.ExceptionsHandlingConstants;
+import model.Course;
+import model.Student;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import service.StudentService;
 
 import java.util.List;
 import java.util.Optional;

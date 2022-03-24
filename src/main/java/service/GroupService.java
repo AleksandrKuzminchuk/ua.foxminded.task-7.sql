@@ -1,7 +1,7 @@
-package main.java.service;
+package service;
 
-import main.java.dao.CrudRepository;
-import main.java.model.Group;
+import dao.CrudRepository;
+import model.Group;
 
 import java.util.List;
 

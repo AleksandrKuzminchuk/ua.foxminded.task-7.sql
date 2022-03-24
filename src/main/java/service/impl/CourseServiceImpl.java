@@ -1,15 +1,14 @@
-package main.java.service.impl;
-
-import main.java.dao.CourseDao;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.model.Course;
-import main.java.service.CourseService;
+package service.impl;
 
 import java.util.List;
 import java.util.Optional;
 
+import dao.CourseDao;
+import exceptions.ExceptionsHandlingConstants;
+import model.Course;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import service.CourseService;
 
 import static java.lang.String.format;
 

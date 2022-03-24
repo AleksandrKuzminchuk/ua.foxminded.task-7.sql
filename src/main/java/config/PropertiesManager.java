@@ -1,6 +1,6 @@
-package main.java.config;
+package config;
 
-import main.java.exceptions.ExceptionsHandlingConstants;
+import exceptions.ExceptionsHandlingConstants;
 import org.apache.log4j.Logger;
 
 import java.io.FileInputStream;

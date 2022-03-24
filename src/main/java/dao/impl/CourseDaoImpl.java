@@ -1,15 +1,13 @@
-package main.java.dao.impl;
+package dao.impl;
 
-import main.java.dao.CourseDao;
-import main.java.dao.constants.QueryConstantsCourses;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Course;
-import main.java.model.Student;
-import main.java.util.ConnectionUtils;
-
+import dao.CourseDao;
+import dao.constants.QueryConstantsCourses;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
+import model.Course;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import util.ConnectionUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

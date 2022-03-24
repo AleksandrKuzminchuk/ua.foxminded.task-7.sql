@@ -1,8 +1,7 @@
-package main.java.service;
+package service;
 
-import main.java.dao.CourseDao;
-import main.java.dao.CrudRepository;
-import main.java.model.Course;
+import dao.CrudRepository;
+import model.Course;
 
 import java.util.List;
 

@@ -1,14 +1,13 @@
-package main.java.dao.impl;
+package dao.impl;
 
-import main.java.dao.GroupDao;
-import main.java.dao.constants.QueryConstantsGroups;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.exceptions.NoDBPropertiesException;
-import main.java.model.Group;
-import main.java.util.ConnectionUtils;
-
+import dao.GroupDao;
+import dao.constants.QueryConstantsGroups;
+import exceptions.ExceptionsHandlingConstants;
+import exceptions.NoDBPropertiesException;
+import model.Group;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import util.ConnectionUtils;
 
 
 import java.sql.PreparedStatement;

@@ -1,11 +1,11 @@
-package main.java.service.impl;
+package service.impl;
 
-import main.java.dao.GroupDao;
-import main.java.exceptions.ExceptionsHandlingConstants;
-import main.java.model.Group;
-import main.java.service.GroupService;
+import dao.GroupDao;
+import exceptions.ExceptionsHandlingConstants;
+import model.Group;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
+import service.GroupService;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,13 +1,13 @@
-package main.test.service;
+package service;
 
-import main.java.dao.CourseDao;
-import main.java.dao.StudentDao;
-import main.java.model.Course;
-import main.java.model.Student;
-import main.java.service.impl.StudentServiceImpl;
+import dao.CourseDao;
+import dao.StudentDao;
+import model.Course;
+import model.Student;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import service.impl.StudentServiceImpl;
 
 import java.util.Collections;
 import java.util.LinkedList;

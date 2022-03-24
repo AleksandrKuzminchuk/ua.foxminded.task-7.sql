@@ -1,22 +1,21 @@
 package main.java;
 
+import application.GeneratorData;
 import com.github.javafaker.Faker;
-
-import main.java.application.GeneratorData;
-import main.java.config.PropertiesManager;
-import main.java.dao.CourseDao;
-import main.java.dao.GroupDao;
-import main.java.dao.StudentDao;
-import main.java.dao.impl.CourseDaoImpl;
-import main.java.dao.impl.GroupDaoImpl;
-import main.java.dao.impl.StudentDaoImpl;
-import main.java.model.Course;
-import main.java.model.Group;
-import main.java.model.Student;
-import main.java.service.impl.StudentServiceImpl;
-import main.java.util.ConnectionUtils;
-import main.java.util.QueryExecutor;
+import config.PropertiesManager;
+import dao.CourseDao;
+import dao.GroupDao;
+import dao.StudentDao;
+import dao.impl.CourseDaoImpl;
+import dao.impl.GroupDaoImpl;
+import dao.impl.StudentDaoImpl;
+import model.Course;
+import model.Group;
+import model.Student;
 import org.apache.log4j.Logger;
+import service.impl.StudentServiceImpl;
+import util.ConnectionUtils;
+import util.QueryExecutor;
 
 import java.util.List;
 import java.util.Optional;

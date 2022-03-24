@@ -1,7 +1,8 @@
-package main.java.dao;
+package dao;
 
-import main.java.model.Course;
-import main.java.model.Student;
+
+import model.Course;
+import model.Student;
 
 import java.util.List;
 
