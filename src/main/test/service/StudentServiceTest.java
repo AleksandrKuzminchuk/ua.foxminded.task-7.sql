@@ -59,4 +59,10 @@ class StudentServiceTest {
         verify(studentDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseOne);
         verify(studentDaoMock, atMostOnce()).addStudentAndCourse(preparedStudent, courseTwo);
     }
+
+    @Test
+    void updateStudent(){
+        Student preparedStudent = new Student("Oleksandr", "Kuzminchuk");
+
+    }
 }

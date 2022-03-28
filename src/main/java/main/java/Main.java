@@ -13,6 +13,9 @@ import model.Course;
 import model.Group;
 import model.Student;
 import org.apache.log4j.Logger;
+import service.GroupService;
+import service.impl.CourseServiceImpl;
+import service.impl.GroupServiceImpl;
 import service.impl.StudentServiceImpl;
 import util.ConnectionUtils;
 import util.QueryExecutor;
@@ -62,6 +65,10 @@ public class Main {
         List<Student> students = studentDao.findAll();
         List<Course> courses = courseDao.findAll();
 
+        GroupServiceImpl groupService = new GroupServiceImpl(groupDao);
+
+        CourseServiceImpl courseService = new CourseServiceImpl(courseDao);
+
 
         StudentServiceImpl studentService = new StudentServiceImpl(courseDao, studentDao);
         studentService.addStudentOnCourses(students.get(1), courses);
@@ -71,25 +78,25 @@ public class Main {
         logger.error("allSignedOnCurse IS null  ->  must be Implemented!");
         }
 
-        groupDao.count();
-        List<Group> lessEqual = groupDao.findByStudentsCountsLessEqual(8);
+        groupService.count();
+        List<Group> lessEqual = groupService.findByStudentsCountsLessEqual(8);
 
         Optional<String> courseName = Optional.of(courses).map(list -> list.get(5)).map(Course::getCourseName);
         if (courseName.isPresent()) {
-            List<Student> byCourseName = studentDao.findByCourseName(courseName.get());
+            List<Student> byCourseName = studentService.findByCourseName(courseName.get());
             logger.info("byCourseName:" + byCourseName);
         }
-        studentDao.deleteFromCourse(152, 2);
+        studentService.deleteFromCourse(152, 2);
 
-        courseDao.findById(1);
+        studentService.findById(1);
 
-        courseDao.count();
+        courseService.count();
 
-        studentDao.updateStudent(new Student(2,"Oleksandr", "Kuzminchuk"));
+        studentService.updateStudent(new Student(2,"Oleksandr", "Kuzminchuk"));
 
-        courseDao.updateCourse(new Course(1, "Match of Business", "Course of Master of Match"));
+        courseService.updateCourse(new Course(1, "Match of Business", "Course of Master of Match"));
 
-        groupDao.updateGroup(new Group(1, "Kn-56"));
+        groupService.updateGroup(new Group(1, "Kn-56"));
 
     }
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import dao.CourseDao;
 import exceptions.ExceptionsHandlingConstants;
+import exceptions.NotFoundException;
 import model.Course;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -36,7 +37,8 @@ public class CourseServiceImpl implements CourseService {
     public Optional<Course> findById(Integer integer) {
         requiredNonNull(integer);
         logger.info(format("findById %d", integer));
-        return courseDao.findById(integer);
+        return Optional.ofNullable(courseDao.findById(integer).
+                orElseThrow(() -> new NotFoundException("Course not found by id = " + integer)));
     }
 
     @Override

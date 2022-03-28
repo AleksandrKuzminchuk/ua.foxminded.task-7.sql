@@ -3,12 +3,14 @@ package service.impl;
 import dao.CourseDao;
 import dao.StudentDao;
 import exceptions.ExceptionsHandlingConstants;
+import exceptions.NotFoundException;
 import model.Course;
 import model.Student;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 import service.StudentService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +40,9 @@ public class StudentServiceImpl implements StudentService {
         logger.info(format("findAllSignedOnCourseID = '%d'", courseId));
         List<Student> students = studentDao.findAllSignedOnCourse(courseId);
         logger.info(format("FOUND Students signed on course - %d, %s", courseId, students));
+        if (students == null){
+            return students;
+        }
         return students;
     }
 
@@ -91,7 +96,8 @@ public class StudentServiceImpl implements StudentService {
         requiredNonNull(integer);
         logger.info(format("findById('%d')", integer));
         logger.info(format("%d FOUND", integer));
-        return studentDao.findById(integer);
+        return Optional.ofNullable(studentDao.findById(integer).
+                orElseThrow(() -> new NotFoundException("Student not found by id = " + integer)));
 
     }
 

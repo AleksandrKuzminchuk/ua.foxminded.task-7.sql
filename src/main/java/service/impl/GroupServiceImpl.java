@@ -2,6 +2,7 @@ package service.impl;
 
 import dao.GroupDao;
 import exceptions.ExceptionsHandlingConstants;
+import exceptions.NotFoundException;
 import model.Group;
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
@@ -34,7 +35,8 @@ public class GroupServiceImpl implements GroupService {
     public Optional<Group> findById(Integer integer) {
         requiredNonNull(integer);
         logger.info(format("findById('%d')", integer));
-        return groupDao.findById(integer);
+        return Optional.ofNullable(groupDao.findById(integer).
+                orElseThrow(() -> new NotFoundException("Group not found by id = " + integer)));
     }
 
     @Override
