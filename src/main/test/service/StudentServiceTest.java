@@ -44,6 +44,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodFindAllSignedOnCourse(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.findAllSignedOnCourse(null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotFindAllStudentsSinedOnCourse() {
 
     }
@@ -70,6 +78,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodAddStudentOnCourse(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.addStudentOnCourses(null, null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotAddStudentOnCourses(){
 
     }
@@ -82,6 +98,14 @@ class StudentServiceTest {
         testingStudentService.deleteById(getExpectedStudentId());
 
         verify(studentDaoMock, atMostOnce()).deleteById(getExpectedStudentId());
+    }
+
+    @Test
+    void shouldThrowExceptionNotNullInMethodDeleteById(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.deleteById(null);
+                });
     }
 
     @Test
@@ -100,6 +124,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodSave(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.save(null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotSaveStudent(){
 
     }
@@ -112,6 +144,14 @@ class StudentServiceTest {
         testingStudentService.findById(getExpectedStudentId());
 
         verify(studentDaoMock, atMostOnce()).findById(getExpectedStudentId());
+    }
+
+    @Test
+    void shouldThrowExceptionNotNullInMethodFindById(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.findById(null);
+                });
     }
 
     @Test
@@ -149,6 +189,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodSaveAll(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.saveAll(null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotSaveAllStudents(){
 
     }
@@ -170,6 +218,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodFindByCourseName(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.findByCourseName(null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotFindStudentsByCourseName(){
 
     }
@@ -182,6 +238,14 @@ class StudentServiceTest {
         testingStudentService.assignToCourse(getExpectedStudentId(),getExpectedCourseId());
 
         verify(studentDaoMock, times(1)).assignToCourse(getExpectedStudentId(),getExpectedCourseId());
+    }
+
+    @Test
+    void shouldThrowExceptionNotNullInMethodAssignToCourse(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.assignToCourse(null, null);
+                });
     }
 
     @Test
@@ -200,27 +264,15 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodDeleteFromCourse(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.deleteFromCourse(null, null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotDeleteFromCourse(){
-
-    }
-
-    @Test
-    void shouldFindAllSignedOnCourse(){
-
-        when(studentDaoMock.findAllSignedOnCourse(getExpectedCourseId())).thenReturn(getExpectedStudents());
-
-        List<Student> allStudentsSignedOnCourse = testingStudentService.findAllSignedOnCourse(getExpectedCourseId());
-
-        assertNotNull(allStudentsSignedOnCourse);
-        assertFalse(allStudentsSignedOnCourse.isEmpty());
-        assertEquals(2, allStudentsSignedOnCourse.size());
-        assertEquals(allStudentsSignedOnCourse, getExpectedStudents());
-
-        verify(studentDaoMock, atMostOnce()).findAllSignedOnCourse(getExpectedCourseId());
-    }
-
-    @Test
-    void shouldThrowNoDBPropertiesExceptionIfCanNotFindAllStudentsSignedOnCourse(){
 
     }
 
@@ -253,6 +305,14 @@ class StudentServiceTest {
     }
 
     @Test
+    void shouldThrowExceptionNotNullInMethodDelete(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.delete(null);
+                });
+    }
+
+    @Test
     void shouldThrowNoDBPropertiesExceptionIfCanNotDeleteStudent(){
 
     }
@@ -265,6 +325,14 @@ class StudentServiceTest {
         testingStudentService.updateStudent(getExpectedStudent());
 
         verify(studentDaoMock, times(1)).updateStudent(getExpectedStudent());
+    }
+
+    @Test
+    void shouldThrowExceptionNotNullInMethodUpdateStudent(){
+        assertThrows(IllegalArgumentException.class,
+                () -> {
+            testingStudentService.updateStudent(null);
+                });
     }
 
     @Test

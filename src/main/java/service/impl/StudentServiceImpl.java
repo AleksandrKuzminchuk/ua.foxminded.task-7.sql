@@ -10,7 +10,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 import service.StudentService;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public void addStudentOnCourses(Student student, List<Course> courses) {
-        requiredNonNull(student, courses);
+        requiredNonNull(student);
+        requiredNonNull(courses);
         logger.info(format("ADDING... %s on %s", student, courses));
         courses.forEach(course -> studentDao.addStudentAndCourse(student, course));
         logger.info(format("ADDED %s on %s", student, courses));
@@ -55,6 +55,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void assignToCourse(Integer studentId, Integer courseId) {
+        requiredNonNull(studentId);
+        requiredNonNull(courseId);
         logger.info(format("Assigning a studentId('%d') to a courseId('%d')", studentId, courseId));
         studentDao.assignToCourse(studentId, courseId);
         logger.info(format("Assigned a studentId('%d') to a courseId('%d') SUCCESSFULLY", studentId, courseId));
@@ -62,6 +64,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void deleteFromCourse(Integer studentId, Integer courseId) {
+        requiredNonNull(studentId);
+        requiredNonNull(courseId);
         logger.info(format("delete from course a studentId('%d') to a courseId('%d')", studentId, courseId));
         studentDao.deleteFromCourse(studentId, courseId);
         logger.info(format("deleted from course a studentId('%d') to a courseId('%d') SUCCESSFULLY", studentId, courseId));
@@ -147,9 +151,4 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
-    private void requiredNonNull(Object o, Object o2) {
-        if (o == null && o2 == null) {
-            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
-        }
-    }
 }
