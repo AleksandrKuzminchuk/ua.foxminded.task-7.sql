@@ -31,7 +31,6 @@ class StudentServiceTest {
 
     @Test
     void expectedOneStudentSignedOnCourse() {
-        assertNotNull(getExpectedStudent());
 
         when(studentDaoMock.findAllSignedOnCourse(1)).thenReturn(Collections.singletonList(getExpectedStudent()));
 
@@ -78,15 +77,11 @@ class StudentServiceTest {
     @Test
     void shouldDeleteStudentByIdAndCheckNotNullAndEquals(){
 
-        Integer preparedStudentId = 1;
+        doNothing().when(studentDaoMock).deleteById(getExpectedStudentId());
 
-        assertNotNull(preparedStudentId);
+        testingStudentService.deleteById(getExpectedStudentId());
 
-        doNothing().when(studentDaoMock).deleteById(preparedStudentId);
-
-        testingStudentService.deleteById(preparedStudentId);
-
-        verify(studentDaoMock, atMostOnce()).deleteById(preparedStudentId);
+        verify(studentDaoMock, atMostOnce()).deleteById(getExpectedStudentId());
     }
 
     @Test
@@ -96,7 +91,6 @@ class StudentServiceTest {
 
     @Test
     void shouldSaveStudentAndCheckNotNullAndEquals(){
-        assertNotNull(getExpectedStudent());
 
         when(studentDaoMock.save(getExpectedStudent())).thenReturn(Optional.of(getExpectedStudent()));
 
@@ -112,8 +106,6 @@ class StudentServiceTest {
 
     @Test
     void shouldFindStudentByIdAndCheckNotNullAndEquals(){
-        assertNotNull(getExpectedStudent());
-        assertNotNull(getExpectedStudentId());
 
         when(studentDaoMock.findById(getExpectedStudentId())).thenReturn(Optional.of(getExpectedStudent()));
 
@@ -148,8 +140,6 @@ class StudentServiceTest {
 
     @Test
     void shouldSaveAllStudentsAndCheckNotNullAndEmpty(){
-        assertNotNull(getExpectedStudents());
-        assertFalse(getExpectedStudents().isEmpty());
 
         doNothing().when(studentDaoMock).saveAll(getExpectedStudents());
 
@@ -166,9 +156,6 @@ class StudentServiceTest {
     @Test
     void shouldFindByCourseNameAndCheckCourseNameNotNullAndEmpty(){
         Course courseName = new Course(1, "AnyName", "AnyDescription");
-
-        assertNotNull(courseName.getCourseName());
-        assertFalse(courseName.getCourseName().isEmpty());
 
         when(studentDaoMock.findByCourseName(courseName.getCourseName())).thenReturn(getExpectedStudents());
 
@@ -189,14 +176,12 @@ class StudentServiceTest {
 
     @Test
     void shouldAssignToCourseAndCheckNotNull(){
-        assertNotNull(getExpectedStudentId());
-        assertNotNull(getExpectedCourseId());
 
-        doNothing().when(studentDaoMock).assignToCourse(1,2);
+        doNothing().when(studentDaoMock).assignToCourse(getExpectedStudentId(),getExpectedCourseId());
 
-        testingStudentService.assignToCourse(1,2);
+        testingStudentService.assignToCourse(getExpectedStudentId(),getExpectedCourseId());
 
-        verify(studentDaoMock, times(1)).assignToCourse(1,2);
+        verify(studentDaoMock, times(1)).assignToCourse(getExpectedStudentId(),getExpectedCourseId());
     }
 
     @Test
@@ -206,8 +191,6 @@ class StudentServiceTest {
 
     @Test
     void shouldDeleteFromCourseAndCheckNotNull(){
-        assertNotNull(getExpectedStudentId());
-        assertNotNull(getExpectedCourseId());
 
         doNothing().when(studentDaoMock).deleteFromCourse(getExpectedStudentId(), getExpectedCourseId());
 
@@ -223,9 +206,6 @@ class StudentServiceTest {
 
     @Test
     void shouldFindAllSignedOnCourse(){
-        assertNotNull(getExpectedCourseId());
-        assertNotNull(getExpectedStudents());
-        assertFalse(getExpectedStudents().isEmpty());
 
         when(studentDaoMock.findAllSignedOnCourse(getExpectedCourseId())).thenReturn(getExpectedStudents());
 
@@ -252,8 +232,7 @@ class StudentServiceTest {
 
         long foundCountStudents = testingStudentService.count();
 
-        assertNotNull(foundCountStudents);
-        assertEquals(foundCountStudents, preparedCountStudents);
+        assertEquals(foundCountStudents, 10);
 
         verify(studentDaoMock, atMostOnce()).count();
     }
@@ -265,7 +244,6 @@ class StudentServiceTest {
 
     @Test
     void shouldDeleteStudent(){
-        assertNotNull(getExpectedStudent());
 
         doNothing().when(studentDaoMock).delete(getExpectedStudent());
 
@@ -281,7 +259,6 @@ class StudentServiceTest {
 
     @Test
     void shouldUpdateStudentAndCheckNotNull(){
-        assertNotNull(getExpectedStudent());
 
         doNothing().when(studentDaoMock).updateStudent(getExpectedStudent());
 
