@@ -13,7 +13,6 @@ public class PropertiesManager {
 
     private final Properties properties;
 
-
     public PropertiesManager(String propertiesPath){
         if (propertiesPath == null || propertiesPath.isEmpty()){
             throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL_OR_EMPTY);
