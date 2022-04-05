@@ -2,6 +2,7 @@ package ua.foxminded.task7.sql.util;
 
 import com.github.javafaker.Faker;
 import com.github.javafaker.Name;
+import ua.foxminded.task7.sql.exceptions.ExceptionsHandlingConstants;
 import ua.foxminded.task7.sql.model.Course;
 import ua.foxminded.task7.sql.model.Group;
 import ua.foxminded.task7.sql.model.Student;
@@ -14,15 +15,16 @@ public class GeneratorData {
 
     private static final String GROUP_NAME_SEPARATOR = "-";
 
-    private final Faker faker;
-    private final Random random;
+    private Faker faker;
+    private Random random;
 
     public GeneratorData(Faker generatorData, Random generatorNumber) {
         this.faker = generatorData;
         this.random = generatorNumber;
     }
 
-    public List<Group> generateGroup(Integer number) {
+    public List<Group> generateGroups(Integer number) {
+        requiredNonNull(number);
         List<Group> groups = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
             groups.add(createGroup());
@@ -31,6 +33,8 @@ public class GeneratorData {
     }
 
     public List<Student> generateStudents(Integer number, List<Group> groups) {
+        requiredNonNull(number);
+        requiredNonNull(groups);
         List<Student> students = new ArrayList<>(number);
         for (int i = 0; i < number; i++) {
             students.add(createStudent(groups.size()));
@@ -44,32 +48,13 @@ public class GeneratorData {
     }
 
     public List<Course> generateCourses(Integer number) {
+        requiredNonNull(number);
         List<Course> courses = new ArrayList<>(number);
 
         for (int i = 0; i < number; i++) {
             courses.add(createCourse());
         }
         return courses;
-    }
-
-    public void assignStudentsToGroups(List<Group> groups, List<Student> students, Integer minStudentNumber, Integer maxStudentNumber) {
-        LinkedList<Student> studentsAssign = new LinkedList<>(students);
-        Collections.shuffle(studentsAssign);
-        groups.forEach(group -> {
-            IntStream.rangeClosed(1, getRandomNumberInRange(minStudentNumber, maxStudentNumber))
-                    .forEach(i -> {
-                        if (!studentsAssign.isEmpty()) {
-                            studentsAssign.removeFirst().setGroupId(group.getGroupId());
-                        }
-                    });
-        });
-    }
-
-    public void assignCoursesToStudents(List<Course> courses, List<Student> students, Integer minCoursesNumber, Integer maxCoursesNumber) {
-        students.forEach(student -> {
-            IntStream.range(1, getRandomNumberInRange(minCoursesNumber, maxCoursesNumber));
-            assignStudentToRandomCourse(courses, student);
-        });
     }
 
     private Group createGroup() {
@@ -91,10 +76,10 @@ public class GeneratorData {
                 .limit(1).findFirst().getAsInt();
     }
 
-    private void assignStudentToRandomCourse(List<Course> courses, Student student) {
-        Course course = courses.get(getRandomNumberInRange(0, courses.size() - 1));
-        List<Student> students = course.getStudents();
-        Optional.ofNullable(students).ifPresent(list -> list.add(student));
+    private void requiredNonNull(Object o) {
+        if (o == null) {
+            throw new IllegalArgumentException(ExceptionsHandlingConstants.ARGUMENT_IS_NULL);
+        }
     }
 
 }

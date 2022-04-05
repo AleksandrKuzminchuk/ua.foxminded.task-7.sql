@@ -28,15 +28,17 @@ public class GroupServiceImpl implements GroupService {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
         logger.info(format("%s SAVED", entity));
-        return groupDao.save(entity);
+        return Optional.ofNullable(groupDao.save(entity).orElseThrow(() -> new NotFoundException(format("Can't save group %s", entity))));
     }
 
     @Override
     public Optional<Group> findById(Integer integer) {
         requiredNonNull(integer);
-        logger.info(format("findById('%d')", integer));
-        return Optional.ofNullable(groupDao.findById(integer).
+        logger.info(format("Find groups by Id('%d')", integer));
+        Optional<Group> group = Optional.ofNullable(groupDao.findById(integer).
                 orElseThrow(() -> new NotFoundException("Group not found by id = " + integer)));
+        logger.info(format("Found groups %s by Id('%d')", group,integer));
+        return group;
     }
 
     @Override
@@ -47,13 +49,20 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> findAll() {
         logger.info("getAll()...");
-        return groupDao.findAll();
+        List<Group> groups = groupDao.findAll();
+        if (groups == null){
+            throw new NotFoundException("Can't find all groups");
+        }
+        logger.info(format("Found all groups %s",groups));
+        return groups;
     }
 
     @Override
     public long count() {
         logger.info("find count groups...");
-        return groupDao.count();
+        long count = groupDao.count();
+        logger.info(format("Found count groups %d", count));
+        return count;
     }
 
     @Override
@@ -98,8 +107,13 @@ public class GroupServiceImpl implements GroupService {
     @Override
     public List<Group> findByStudentsCountsLessEqual(Integer count) {
         requiredNonNull(count);
-        logger.info(format("findByStudentsCountsLessEqual('%d')", count));
-        return groupDao.findByStudentsCountsLessEqual(count);
+        logger.info(format("Find groups by students counts less equal('%d')", count));
+        List<Group> groups = groupDao.findByStudentsCountsLessEqual(count);
+        if (groups == null){
+            throw new NotFoundException(format("Can't find groups by students counts less equal - %d",count));
+        }
+        logger.info(format("Found groups %s by students counts less equal - %d", groups,count));
+        return groups;
     }
 
     private void requiredNonNull(Object o) {

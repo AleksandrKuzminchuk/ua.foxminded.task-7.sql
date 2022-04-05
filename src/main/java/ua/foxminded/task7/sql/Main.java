@@ -49,7 +49,7 @@ public class Main {
         GeneratorData generatorData = new GeneratorData(faker, random);
 
         GroupDao groupDao = new GroupDaoImpl(connectionUtils);
-        groupDao.saveAll(generatorData.generateGroup(15));
+        groupDao.saveAll(generatorData.generateGroups(15));
         List<Group> allGroups = groupDao.findAll();
         List<Group> groupsByStudents = groupDao.findByStudentsCountsLessEqual(1);
         logger.info(groupsByStudents);

@@ -38,8 +38,9 @@ public class StudentServiceImpl implements StudentService {
         List<Student> students = studentDao.findAllSignedOnCourse(courseId);
         logger.info(format("FOUND Students signed on course - %d, %s", courseId, students));
         if (students == null) {
-            return students;
+            throw new NotFoundException(format("Can't find all students on course %d", courseId));
         }
+        logger.info(format("Found students signed on course %d %s",courseId,students));
         return students;
     }
 
@@ -47,7 +48,12 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findByCourseName(String courseName) {
         requiredNonNull(courseName);
         logger.info(format("findByCourseName('%s')", courseName));
-        return studentDao.findByCourseName(courseName);
+        List<Student> students = studentDao.findByCourseName(courseName);
+        if (students == null){
+            throw new NotFoundException(format("Can't find students by course name %s",courseName));
+        }
+        logger.info(format("Found students by course name %s %s", courseName, students));
+        return students;
     }
 
     @Override
@@ -89,16 +95,17 @@ public class StudentServiceImpl implements StudentService {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
         logger.info(format("%s SAVED", entity));
-        return studentDao.save(entity);
+        return Optional.ofNullable(studentDao.save(entity).orElseThrow(() -> new NotFoundException("Can't save student " + entity)));
     }
 
     @Override
     public Optional<Student> findById(Integer integer) {
         requiredNonNull(integer);
         logger.info(format("findById('%d')", integer));
-        logger.info(format("%d FOUND", integer));
-        return Optional.ofNullable(studentDao.findById(integer).
+        Optional<Student> student = Optional.ofNullable(studentDao.findById(integer).
                 orElseThrow(() -> new NotFoundException("Student not found by id = " + integer)));
+        logger.info(format("FOUND student %s by Id - %d", student,integer));
+        return student;
 
     }
 
@@ -110,13 +117,20 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Student> findAll() {
         logger.info("findAll...");
-        return studentDao.findAll();
+        List<Student> students = studentDao.findAll();
+        if (students == null){
+            throw new NotFoundException("Can't find all students");
+        }
+        logger.info(format("Found all students %s", students));
+        return students;
     }
 
     @Override
     public long count() {
         logger.info("find count students...");
-        return studentDao.count();
+        long count = studentDao.count();
+        logger.info(format("Found count students = %d", count));
+        return count;
     }
 
     @Override

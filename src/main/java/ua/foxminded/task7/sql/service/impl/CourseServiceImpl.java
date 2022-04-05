@@ -30,15 +30,17 @@ public class CourseServiceImpl implements CourseService {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
         logger.info(format("%s SAVED", entity));
-        return courseDao.save(entity);
+        return Optional.ofNullable(courseDao.save(entity).orElseThrow(() -> new NotFoundException("Can't save course " + entity)));
     }
 
     @Override
     public Optional<Course> findById(Integer integer) {
         requiredNonNull(integer);
-        logger.info(format("findById %d", integer));
-        return Optional.ofNullable(courseDao.findById(integer).
-                orElseThrow(() -> new NotFoundException("Course not found by id = " + integer)));
+        logger.info(format("Find course by id - %d", integer));
+        Optional<Course> course = Optional.ofNullable(courseDao.findById(integer).
+                orElseThrow(() -> new NotFoundException("Course not found by id - " + integer)));
+        logger.info(format("Found course %s by id - %d", course,integer));
+        return course;
     }
 
     @Override
@@ -49,13 +51,20 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findAll() {
         logger.info("findAll...");
-        return courseDao.findAll();
+        List<Course> courses = courseDao.findAll();
+        if (courses == null){
+            throw new NotFoundException("Can't find all courses");
+        }
+        logger.info(format("Found all courses %s",courses));
+        return courses;
     }
 
     @Override
     public long count() {
         logger.info("find count courses...");
-        return courseDao.count();
+        long count = courseDao.count();
+        logger.info(format("Found count courses - %d", count));
+        return count;
     }
 
     @Override
@@ -91,6 +100,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void saveAll(List<Course> courses) {
+        requiredNonNull(courses);
         logger.info(format("saving %d courses...", courses.size()));
         courseDao.saveAll(courses);
         logger.info(format("All %d courses saved SUCCESSFULLY", courses.size()));
@@ -99,8 +109,12 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<Course> findByStudentId(Integer studentId) {
         requiredNonNull(studentId);
-        logger.info(format("find by studentId('%d')", studentId));
-        return courseDao.findByStudentId(studentId);
+        logger.info(format("Find courses by student Id('%d')", studentId));
+        List<Course> courses = courseDao.findByStudentId(studentId);
+        if (courses == null){
+            throw new NotFoundException(format("Can't find courses by student Id - %d", studentId));
+        }
+        return courses;
     }
 
     private void requiredNonNull(Object o) {
