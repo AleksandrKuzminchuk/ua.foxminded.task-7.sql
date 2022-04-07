@@ -31,18 +31,9 @@ class PropertiesManagerTest {
         String resultUser = propertiesManager.getProperty(USER);
         String resultPassword = propertiesManager.getProperty(PASSWORD);
 
-        assertNotNull(resultUrl);
-        assertNotNull(resultUser);
-        assertNotNull(resultPassword);
-        assertFalse(resultUrl.isEmpty());
-        assertFalse(resultUser.isEmpty());
-        assertFalse(resultPassword.isEmpty());
         assertEquals(expectedUrl, resultUrl);
         assertEquals(expectedUser, resultUser);
         assertEquals(expectedPassword, resultPassword);
-        assertEquals(expectedUrl.length(), resultUrl.length());
-        assertEquals(expectedUser.length(), resultUser.length());
-        assertEquals(expectedPassword.length(), resultPassword.length());
     }
 
     @Test

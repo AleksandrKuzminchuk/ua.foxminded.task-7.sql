@@ -31,7 +31,7 @@ public class Main {
     private static final String USER = "db.user";
     private static final String PASSWORD = "db.password";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         PropertiesManager propertiesManager = new PropertiesManager(PROPERTIES_FILE);
 
         String url = propertiesManager.getProperty(URL);
@@ -89,13 +89,17 @@ public class Main {
 
         studentService.findById(1);
 
+        groupService.findById(5);
+
+        courseService.findById(1);
+
         courseService.count();
 
-        studentService.updateStudent(new Student(2,"Oleksandr", "Kuzminchuk"));
+        studentService.save(new Student(201,"Mark", "Oksager"));
 
-        courseService.updateCourse(new Course(1, "Match of Business", "Course of Master of Match"));
+        courseService.save(new Course(21, "Match of Business", "Course of Master of Match"));
 
-        groupService.updateGroup(new Group(1, "Kn-56"));
+        groupService.save(new Group(16, "Kn-56"));
 
     }
 

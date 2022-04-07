@@ -8,6 +8,7 @@ public class Course {
     private Integer courseId;
     private String courseName;
     private String courseDescription;
+    private Course course;
     private List<Student> students;
 
     public Course() {
@@ -28,6 +29,10 @@ public class Course {
         this.courseName = courseName;
         this.courseDescription = courseDescription;
         this.students = students;
+    }
+
+    public Course getCourse(){
+        return course;
     }
 
     public Integer getCourseId() {

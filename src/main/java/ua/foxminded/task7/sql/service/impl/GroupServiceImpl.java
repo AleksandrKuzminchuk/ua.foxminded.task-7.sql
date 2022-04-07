@@ -24,19 +24,19 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Optional<Group> save(Group entity) {
+    public Group save(Group entity) {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
-        logger.info(format("%s SAVED", entity));
-        return Optional.ofNullable(groupDao.save(entity).orElseThrow(() -> new NotFoundException(format("Can't save group %s", entity))));
+        Group group = groupDao.save(entity).orElseThrow(() -> new NotFoundException(format("Can't save group %s",entity)));
+        logger.info(format("SAVED group %s", entity));
+        return group;
     }
 
     @Override
-    public Optional<Group> findById(Integer integer) {
+    public Group findById(Integer integer) {
         requiredNonNull(integer);
         logger.info(format("Find groups by Id('%d')", integer));
-        Optional<Group> group = Optional.ofNullable(groupDao.findById(integer).
-                orElseThrow(() -> new NotFoundException("Group not found by id = " + integer)));
+        Group group = groupDao.findById(integer).orElseThrow(() -> new NotFoundException(format("Can't find group by Id - %d", integer)));
         logger.info(format("Found groups %s by Id('%d')", group,integer));
         return group;
     }

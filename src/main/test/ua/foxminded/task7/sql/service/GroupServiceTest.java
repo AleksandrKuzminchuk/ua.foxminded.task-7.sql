@@ -33,13 +33,13 @@ class GroupServiceTest {
 
     @Test
     void shouldSaveGroup(){
-        Optional<Group> expectedGroup = getGroupOptional();
-        when(groupDaoMock.save(getGroup())).thenReturn(expectedGroup);
+        Group expectedGroup = getGroup();
+        when(groupDaoMock.save(getGroup())).thenReturn(getGroupOptional());
 
-        Optional<Group> result = testingGroupService.save(getGroup());
+        Group result = testingGroupService.save(getGroup());
 
         assertNotNull(result);
-        assertEquals(expectedGroup.getClass(), result.getClass());
+        assertEquals(expectedGroup, result);
 
         verify(groupDaoMock, atMostOnce()).save(getGroup());
     }
@@ -50,14 +50,14 @@ class GroupServiceTest {
     }
 
     @Test
-    void shouldFindCourseById(){
-        Optional<Group> expectedGroup = getGroupOptional();
-        when(groupDaoMock.findById(1)).thenReturn(expectedGroup);
+    void shouldFindCourseById() throws Exception {
+        Group expectedGroup = getGroup();
+        when(groupDaoMock.findById(1)).thenReturn(getGroupOptional());
 
-        Optional<Group> result = testingGroupService.findById(1);
+        Group result = testingGroupService.findById(1);
 
         assertNotNull(result);
-        assertEquals(expectedGroup.getClass(), result.getClass());
+        assertEquals(expectedGroup, result);
 
         verify(groupDaoMock, atMostOnce()).findById(1);
     }

@@ -91,19 +91,19 @@ public class StudentServiceImpl implements StudentService {
 
 
     @Override
-    public Optional<Student> save(Student entity) {
+    public Student save(Student entity) {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
-        logger.info(format("%s SAVED", entity));
-        return Optional.ofNullable(studentDao.save(entity).orElseThrow(() -> new NotFoundException("Can't save student " + entity)));
+        Student student = studentDao.save(entity).orElseThrow(() -> new NotFoundException(format("Can't save student %s", entity)));
+        logger.info(format("SAVED student %s", entity));
+        return student;
     }
 
     @Override
-    public Optional<Student> findById(Integer integer) {
+    public Student findById(Integer integer) {
         requiredNonNull(integer);
         logger.info(format("findById('%d')", integer));
-        Optional<Student> student = Optional.ofNullable(studentDao.findById(integer).
-                orElseThrow(() -> new NotFoundException("Student not found by id = " + integer)));
+        Student student = studentDao.findById(integer).orElseThrow(() -> new NotFoundException(format("Can't find student by Id - %d", integer)));
         logger.info(format("FOUND student %s by Id - %d", student,integer));
         return student;
 

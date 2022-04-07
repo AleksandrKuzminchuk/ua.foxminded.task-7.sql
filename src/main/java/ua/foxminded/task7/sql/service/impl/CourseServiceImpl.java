@@ -1,7 +1,9 @@
 package ua.foxminded.task7.sql.service.impl;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import ua.foxminded.task7.sql.dao.CourseDao;
 import ua.foxminded.task7.sql.exceptions.ExceptionsHandlingConstants;
@@ -26,19 +28,19 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Optional<Course> save(Course entity) {
+    public Course save(Course entity) {
         requiredNonNull(entity);
         logger.info(format("saving %s...", entity));
-        logger.info(format("%s SAVED", entity));
-        return Optional.ofNullable(courseDao.save(entity).orElseThrow(() -> new NotFoundException("Can't save course " + entity)));
+        Course course = courseDao.save(entity).orElseThrow(() -> new NotFoundException(format("Can't save course %s", entity)));
+        logger.info(format("SAVED course %s", entity));
+        return course;
     }
 
     @Override
-    public Optional<Course> findById(Integer integer) {
+    public Course findById(Integer integer) throws Exception {
         requiredNonNull(integer);
         logger.info(format("Find course by id - %d", integer));
-        Optional<Course> course = Optional.ofNullable(courseDao.findById(integer).
-                orElseThrow(() -> new NotFoundException("Course not found by id - " + integer)));
+        Course course = courseDao.findById(integer).orElseThrow(() -> new NotFoundException(format("Can't find course by Id - %d", integer)));
         logger.info(format("Found course %s by id - %d", course,integer));
         return course;
     }

@@ -6,7 +6,7 @@ import ua.foxminded.task7.sql.model.Student;
 
 import java.util.List;
 
-public interface StudentService extends CrudRepository<Student, Integer> {
+public interface StudentService extends CrudRepositoryService<Student, Integer> {
 
     void updateStudent(Student student);
 

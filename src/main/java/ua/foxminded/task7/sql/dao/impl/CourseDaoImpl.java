@@ -80,19 +80,19 @@ public class CourseDaoImpl implements CourseDao {
     }
 
     @Override
-    public Optional<Course> findById(Integer studentId) {
-        requiredNonNull(studentId);
-        logger.info(format("findById %d", studentId));
+    public Optional<Course> findById(Integer courseId) {
+        requiredNonNull(courseId);
+        logger.info(format("findById %d", courseId));
         try (PreparedStatement statement = connectionUtils.getConnection()
-                .prepareStatement(QueryConstantsCourses.FIND_COURSES_BY_STUDENT_ID)) {
-            statement.setInt(1, studentId);
+                .prepareStatement(QueryConstantsCourses.FIND_BY_COURSE_ID)) {
+            statement.setInt(1, courseId);
             ResultSet resultSet = statement.executeQuery();
             Course result = resultSet.next() ? extract(resultSet) : null;
             logger.info(format("%s FOUND", result));
             return Optional.ofNullable(result);
         } catch (SQLException e) {
             logger.error("Can't find course by studentId", e);
-            return Optional.empty();
+            throw new NoDBPropertiesException(e.getLocalizedMessage());
         }
     }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ua.foxminded.task7.sql.dao.CourseDao;
+import ua.foxminded.task7.sql.exceptions.NotFoundException;
 import ua.foxminded.task7.sql.model.Course;
 import ua.foxminded.task7.sql.service.impl.CourseServiceImpl;
 
@@ -34,11 +35,14 @@ class CourseServiceTest {
     @Test
     void shouldSaveCourse(){
         Course expectedCourse = getExpectedCourse();
-        when(courseDaoMock.save(expectedCourse)).thenReturn(Optional.of(getExpectedCourse()));
+        when(courseDaoMock.save(getExpectedCourse())).thenReturn(getExpectedCourseOptional());
 
-        testingCourseService.save(expectedCourse);
+        Course result = testingCourseService.save(getExpectedCourse());
 
-        verify(courseDaoMock, atMostOnce()).save(expectedCourse);
+        assertNotNull(result);
+        assertEquals(expectedCourse, result);
+
+        verify(courseDaoMock, atMostOnce()).save(getExpectedCourse());
     }
 
     @Test
@@ -47,14 +51,14 @@ class CourseServiceTest {
     }
 
     @Test
-    void shouldFindCourseById(){
-        Optional<Course> expectedCourse = getExpectedCourseOptional();
-        when(courseDaoMock.findById(1)).thenReturn(expectedCourse);
+    void shouldFindCourseById() throws Exception {
+        Course expectedCourse = getExpectedCourse();
+        when(courseDaoMock.findById(1)).thenReturn(getExpectedCourseOptional());
 
-        Optional<Course> result = testingCourseService.findById(1);
+        Course result = testingCourseService.findById(1);
 
-        assertNotNull(result.getClass());
-        assertEquals(expectedCourse.getClass(), result.getClass());
+        assertNotNull(result);
+        assertEquals(expectedCourse, result);
 
         verify(courseDaoMock, atMostOnce()).findById(1);
     }

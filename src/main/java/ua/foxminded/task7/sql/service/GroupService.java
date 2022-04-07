@@ -5,7 +5,7 @@ import ua.foxminded.task7.sql.model.Group;
 
 import java.util.List;
 
-public interface GroupService extends CrudRepository<Group, Integer> {
+public interface GroupService extends CrudRepositoryService<Group, Integer> {
 
     void updateGroup(Group group);
 

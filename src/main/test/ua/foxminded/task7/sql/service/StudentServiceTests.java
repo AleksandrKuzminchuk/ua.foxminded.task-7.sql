@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class StudentServiceTest {
+class StudentServiceTests {
     private static StudentDao studentDaoMock;
     private static StudentService testingStudentService;//не надо было "исправлять" -- было как раз правильно (мы тестируем реализацию интерфейса)
 
@@ -98,13 +98,13 @@ class StudentServiceTest {
 
     @Test
     void shouldSaveStudent() {
-        Optional<Student> expectedStudent = getStudentOptional();
-        when(studentDaoMock.save(getExpectedStudent())).thenReturn(expectedStudent);
+        Student expectedStudent = getExpectedStudent();
+        when(studentDaoMock.save(getExpectedStudent())).thenReturn(getStudentOptional());
 
-        Optional<Student> result = testingStudentService.save(getExpectedStudent());
+        Student result = testingStudentService.save(getExpectedStudent());
 
         assertNotNull(result);
-        assertEquals(expectedStudent.getClass(), result.getClass());
+        assertEquals(expectedStudent, result);
 
         verify(studentDaoMock, atMostOnce()).save(getExpectedStudent());
     }
@@ -116,14 +116,14 @@ class StudentServiceTest {
 
 
     @Test
-    void shouldFindStudentById() {
-        Optional<Student> expectedStudent = getStudentOptional();
-        when(studentDaoMock.findById(1)).thenReturn(expectedStudent);
+    void shouldFindStudentById() throws Exception {
+        Student expectedStudent = getExpectedStudent();
+        when(studentDaoMock.findById(1)).thenReturn(getStudentOptional());
 
-        Optional<Student> result = testingStudentService.findById(1);
+        Student result = testingStudentService.findById(1);
 
         assertNotNull(result);
-        assertEquals(expectedStudent.getClass(), result.getClass());
+        assertEquals(expectedStudent, result);
 
         verify(studentDaoMock, atMostOnce()).findById(1);
     }
